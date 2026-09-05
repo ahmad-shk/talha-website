@@ -1,0 +1,39 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
+
+export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
+    credentials: "include",
+    headers: { "Content-Type": "application/json", ...(options.headers ?? {}) },
+  });
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.error?.message ?? "Something went wrong. Please try again.");
+  return data as T;
+}
+
+export type AuthUser = { id: string; email: string; firstName: string; lastName: string; role: "customer" | "admin" | "staff"; createdAt?: string; updatedAt?: string };
+export type ApplicationStatus = "draft" | "in_review" | "ready_for_payment" | "paid" | "processing" | "completed" | "cancelled";
+export type Application = { id: string; userId: string; serviceSlug: string; packageSlug?: string; formationState?: string; currentStep: number; answers: Record<string, unknown>; status: ApplicationStatus; createdAt: string; updatedAt: string };
+export type BillingLineItem = { key: string; label: string; amount: number; currency: string; total: number };
+export type BillingOrder = { id: string; applicationId: string; userId: string; lineItems: BillingLineItem[]; subtotal: number; total: number; currency: string; status: "pending" | "paid"; createdAt: string; updatedAt: string };
+
+type AuthResponse = { success: true; data: { user: AuthUser } };
+type ApplicationResponse = { success: true; data: { application: Application } };
+type ApplicationsResponse = { success: true; data: { applications: Application[] } };
+type BillingResponse = { success: true; data: BillingOrder | null };
+
+export async function login(email: string, password: string) { return apiRequest<AuthResponse>("/api/v1/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }); }
+export async function loginWithGoogle(credential: string) { return apiRequest<AuthResponse>("/api/v1/auth/google", { method: "POST", body: JSON.stringify({ credential }) }); }
+export async function register(input: { email: string; password: string; firstName: string; lastName: string }) { return apiRequest<AuthResponse>("/api/v1/auth/register", { method: "POST", body: JSON.stringify(input) }); }
+export async function getCurrentUser() { return apiRequest<AuthResponse>("/api/v1/auth/me"); }
+export async function getMyUser() { return apiRequest<AuthResponse>("/api/v1/users/me"); }
+export async function logout() { return apiRequest<{ success: true; data: { message: string } }>("/api/v1/auth/logout", { method: "POST" }); }
+export async function createApplication(input: { serviceSlug: string; packageSlug?: string; formationState?: string; currentStep?: number; answers?: Record<string, unknown> }) { return apiRequest<ApplicationResponse>("/api/v1/applications", { method: "POST", body: JSON.stringify(input) }); }
+export async function getApplications() { return apiRequest<ApplicationsResponse>("/api/v1/applications"); }
+export async function getApplication(id: string) { return apiRequest<ApplicationResponse>(`/api/v1/applications/${encodeURIComponent(id)}`); }
+export async function updateApplication(id: string, input: Partial<Omit<Application, "id" | "userId" | "serviceSlug" | "createdAt" | "updatedAt">>) { return apiRequest<ApplicationResponse>(`/api/v1/applications/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) }); }
+export async function deleteApplication(id: string) { return apiRequest<void>(`/api/v1/applications/${encodeURIComponent(id)}`, { method: "DELETE" }); }
+
+export async function getBilling(applicationId: string) { return apiRequest<BillingResponse>(`/api/v1/billing/${encodeURIComponent(applicationId)}`); }
+export async function createBillingOrder(applicationId: string) { return apiRequest<{ success: true; data: BillingOrder }>(`/api/v1/billing/${encodeURIComponent(applicationId)}/order`, { method: "POST" }); }
+export async function payBillingOrder(applicationId: string) { return apiRequest<{ success: true; data: BillingOrder }>(`/api/v1/billing/${encodeURIComponent(applicationId)}/payment`, { method: "POST" }); }
