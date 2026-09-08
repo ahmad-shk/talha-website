@@ -1,4 +1,4 @@
-import { articles } from "@/lib/data";
+import { articles } from "@/content/articles";
 import { notFound } from "next/navigation";
 export function generateStaticParams() {
   return articles.map((a) => ({ slug: a.slug }));

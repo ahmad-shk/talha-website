@@ -17,12 +17,12 @@ export default function HomePage() {
       <HomeMotion>
         <main>
           <HeroSection />
-          <VSLSection />
+          {/* <VSLSection /> */}
           <ProblemsSolutions />
           <PricingSection />
           <DashboardSection />
           <ProcessSection />
-          <StateExplorerSection />
+          {/* <StateExplorerSection /> */}
           <TestimonialsSection />
           <FAQSection />
           <CTASection />

@@ -1,136 +1,42 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { notFound } from "next/navigation";
-import { getServiceBySlug, serviceCatalog } from "@/lib/services/catalog";
+import { getServiceBySlug, serviceCatalog } from "@/lib/services";
 import { Card, IconContainer, SectionLabel } from "@/components/ui/design-system";
 
 export function generateStaticParams() {
   return serviceCatalog.map((service) => ({ slug: service.slug }));
 }
 
-const actionBase =
-  "inline-flex items-center justify-center gap-2 rounded-[var(--fm-radius-pill)] px-5 py-3.5 text-sm font-bold transition-[transform,background-color,border-color,color] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:-translate-y-1";
+const actionBase = "inline-flex items-center justify-center gap-2 rounded-[var(--fm-radius-pill)] px-5 py-3.5 text-sm font-bold transition-[transform,background-color,border-color,color] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:-translate-y-1";
 
-export default async function ServicePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const service = getServiceBySlug(slug);
   if (!service) return notFound();
-
   const serviceIndex = serviceCatalog.findIndex((item) => item.slug === slug);
-  const relatedServices = serviceCatalog
-    .filter((item) => item.slug !== slug)
-    .slice(Math.max(0, serviceIndex), Math.max(0, serviceIndex) + 3);
+  const relatedServices = serviceCatalog.filter((item) => item.slug !== slug).slice(Math.max(0, serviceIndex), Math.max(0, serviceIndex) + 3);
 
   return (
     <main className="fm-page overflow-hidden">
-      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_87%_18%,rgba(181,205,83,.14),transparent_28%),linear-gradient(135deg,var(--fm-graphite-deep)_0%,var(--fm-graphite)_100%)] px-fm-6 pb-24 pt-40 sm:px-fm-10 lg:px-fm-14">
-        <div className="pointer-events-none absolute inset-0 opacity-100 [background-image:linear-gradient(rgba(181,205,83,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(181,205,83,.045)_1px,transparent_1px)] [background-size:42px_42px] [mask-image:linear-gradient(to_bottom,#000,transparent_86%)]" />
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_87%_18%,color-mix(in_srgb,var(--fm-lime)_14%,transparent),transparent_28%),linear-gradient(135deg,var(--fm-graphite-deep)_0%,var(--fm-graphite)_100%)] px-fm-6 pb-24 pt-40 sm:px-fm-10 lg:px-fm-14">
+        <div className="pointer-events-none absolute inset-0 opacity-100 [background-image:linear-gradient(color-mix(in_srgb,var(--fm-lime)_4.5%,transparent)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_srgb,var(--fm-lime)_4.5%,transparent)_1px,transparent_1px)] [background-size:42px_42px] [mask-image:linear-gradient(to_bottom,#000,transparent_86%)]" />
         <div className="relative z-[1] mx-auto w-full max-w-[1400px]">
-          <Link href="/services" className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[.08em] text-[var(--fm-lime)] transition-[transform,color] duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] hover:-translate-x-1 hover:text-[var(--fm-lime-bright)]">
-            <span aria-hidden="true">←</span> All services
-          </Link>
-
+          <Link href="/services" className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[.08em] text-[var(--fm-lime)] transition-[transform,color] duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] hover:-translate-x-1 hover:text-[var(--fm-lime-bright)]"><span aria-hidden="true">←</span> All services</Link>
           <div className="mt-14 grid items-end gap-fm-12 lg:grid-cols-[1.25fr_.75fr]">
             <div>
               <SectionLabel>Service {String(serviceIndex + 1).padStart(2, "0")}</SectionLabel>
               <h1 className="mt-4 max-w-[10ch] font-display text-fm-hero font-bold tracking-[-.06em]">{service.name}</h1>
               <p className="mt-6 max-w-[650px] text-fm-body text-[var(--fm-text-secondary)]">{service.description}</p>
-              <div className="mt-8 flex flex-wrap gap-fm-3">
-                <Link href="/contact" className={`${actionBase} bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-lime-bright)]`}>
-                  Start this service <ArrowUpRight className="size-4" />
-                </Link>
-                <Link href="/pricing" className={`${actionBase} border border-[var(--fm-border)] bg-[var(--fm-surface)] text-[var(--fm-text-primary)] hover:border-[var(--fm-border-accent)]`}>
-                  See pricing
-                </Link>
-              </div>
+              <div className="mt-8 flex flex-wrap gap-fm-3"><Link href="/contact" className={`${actionBase} bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-lime-bright)]`}>Start this service <ArrowUpRight className="size-4" /></Link><Link href="/pricing" className={`${actionBase} border border-[var(--fm-border)] bg-[var(--fm-surface)] text-[var(--fm-text-primary)] hover:border-[var(--fm-border-accent)]`}>See pricing</Link></div>
             </div>
-
-            <Card variant="elevated" tone="lime" className="relative min-h-[300px] overflow-hidden p-7 sm:p-8">
-              <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[rgba(16,19,16,.2)] shadow-[0_0_0_24px_rgba(16,19,16,.05),0_0_0_48px_rgba(16,19,16,.03)]" />
-              <span className="relative z-[1] font-mono text-[10px] uppercase tracking-[.1em] text-[rgba(16,19,16,.62)]">Audvertax / service desk</span>
-              <strong className="relative z-[1] mt-16 block max-w-[250px] text-[2rem] font-bold leading-[1.04] tracking-[-.05em]">Built for the next move.</strong>
-              <p className="relative z-[1] mt-4 max-w-[280px] text-sm leading-[1.55] text-[rgba(16,19,16,.72)]">One guided workflow from your first question to a ready-to-operate business.</p>
-              <div className="relative z-[1] mb-4 mt-6 h-px bg-[rgba(16,19,16,.2)]" />
-              <span className="relative z-[1] font-mono text-[10px] uppercase tracking-[.1em] text-[rgba(16,19,16,.72)]">Remote-first support <i className="ml-2 inline-block size-1.5 rounded-full bg-[var(--fm-graphite-deep)]" aria-hidden="true" /></span>
-            </Card>
+            <Card variant="elevated" tone="lime" className="relative min-h-[300px] overflow-hidden p-7 sm:p-8"><div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full border border-[rgba(16,19,16,.2)] shadow-[0_0_0_24px_rgba(16,19,16,.05),0_0_0_48px_rgba(16,19,16,.03)]" /><span className="relative z-[1] font-mono text-[10px] uppercase tracking-[.1em] text-[rgba(16,19,16,.62)]">Audvertax / service desk</span><strong className="relative z-[1] mt-16 block max-w-[250px] text-[2rem] font-bold leading-[1.04] tracking-[-.05em]">Built for the next move.</strong><p className="relative z-[1] mt-4 max-w-[280px] text-sm leading-[1.55] text-[rgba(16,19,16,.72)]">One guided workflow from your first question to a ready-to-operate business.</p><div className="relative z-[1] mb-4 mt-6 h-px bg-[rgba(16,19,16,.2)]" /><span className="relative z-[1] font-mono text-[10px] uppercase tracking-[.1em] text-[rgba(16,19,16,.72)]">Remote-first support <i className="ml-2 inline-block size-1.5 rounded-full bg-[var(--fm-graphite-deep)]" aria-hidden="true" /></span></Card>
           </div>
         </div>
       </section>
-
-      <section className="bg-[var(--fm-graphite-deep)] px-fm-6 py-24 sm:px-fm-10 lg:px-fm-14">
-        <div className="mx-auto w-full max-w-[1400px]">
-          <div className="mb-12 flex flex-col justify-between gap-fm-8 lg:flex-row lg:items-end">
-            <div>
-              <SectionLabel>What this includes</SectionLabel>
-              <h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold text-[var(--fm-text-primary)]">A guided, documented workflow.</h2>
-            </div>
-            <p className="max-w-[330px] text-fm-body text-[var(--fm-text-secondary)]">{service.shortDescription}</p>
-          </div>
-
-          <div className="grid gap-fm-12 lg:grid-cols-[1.2fr_.8fr]">
-            <div className="border-t border-[var(--fm-border)]">
-              {[
-                ["01", "Review your requirements", "We start with your business, location, and intended use case."],
-                ["02", "Prepare the application", "Your information is organized into a clear submission workflow."],
-                ["03", "Track the next step", "Stay informed as the service moves through review and completion."],
-              ].map(([number, title, description]) => (
-                <div key={number} className="grid grid-cols-[48px_1fr] gap-x-fm-4 border-b border-[var(--fm-border)] py-6">
-                  <span className="font-mono text-[11px] font-bold text-[var(--fm-lime-bright)]">{number}</span>
-                  <strong className="text-lg text-[var(--fm-text-primary)]">{title}</strong>
-                  <p className="col-start-2 mt-2 text-sm leading-6 text-[var(--fm-text-secondary)]">{description}</p>
-                </div>
-              ))}
-            </div>
-
-            <Card variant="standard" tone="default" className="p-7 sm:p-8">
-              <IconContainer className="mb-8 bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)]">FM</IconContainer>
-              <p className="max-w-[330px] text-lg leading-[1.45] text-[var(--fm-text-primary)]">Eligibility, documents, provider requirements and timing can vary by service.</p>
-              <div className="mt-6 border-l-2 border-[var(--fm-lime)] pl-3.5 text-sm leading-6 text-[var(--fm-text-secondary)]">Submit an inquiry and the team can confirm the current requirements.</div>
-              <Link href="/contact" className={`${actionBase} mt-7 bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-lime-bright)]`}>Request assistance <ArrowUpRight className="size-4" /></Link>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[var(--fm-surface)] px-fm-6 py-24 sm:px-fm-10 lg:px-fm-14">
-        <div className="mx-auto w-full max-w-[1400px]">
-          <div className="mb-10 flex flex-col justify-between gap-fm-8 lg:flex-row lg:items-end">
-            <div>
-              <SectionLabel>Complete your setup</SectionLabel>
-              <h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold text-[var(--fm-text-primary)]">You may also need.</h2>
-            </div>
-            <Link href="/services" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--fm-lime)] transition-[transform,color] duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] hover:translate-x-1 hover:text-[var(--fm-lime-bright)]">Browse all services <ArrowUpRight className="size-4" /></Link>
-          </div>
-
-          <div className="grid gap-fm-4 md:grid-cols-3">
-            {relatedServices.map((relatedService, index) => (
-              <Link key={relatedService.slug} href={`/services/${relatedService.slug}`} className="group block">
-                <Card variant="interactive" tone="default" className="flex min-h-[300px] h-full flex-col items-start p-7">
-                  <span className="font-mono text-[10px] font-bold tracking-[.12em] text-[var(--fm-lime-bright)]">0{index + 1}</span>
-                  <h3 className="mt-7 max-w-[260px] font-display text-2xl font-bold tracking-[-.035em] text-[var(--fm-card-text)]">{relatedService.name}</h3>
-                  <p className="mt-3 text-sm leading-6 text-[var(--fm-card-muted)]">{relatedService.shortDescription}</p>
-                  <span className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[var(--fm-lime-bright)]">View service <ArrowRight className="size-4 transition-transform duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] group-hover:translate-x-1" /></span>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[var(--fm-lime)] px-fm-6 py-20 text-[var(--fm-graphite-deep)] sm:px-fm-10 lg:px-fm-14">
-        <div className="mx-auto flex w-full max-w-[1400px] flex-col justify-between gap-fm-8 lg:flex-row lg:items-end">
-          <div>
-            <SectionLabel className="text-[var(--fm-graphite-deep)]">Keep exploring</SectionLabel>
-            <h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold tracking-[-.025em]">Build the full stack.</h2>
-            <p className="mt-4 max-w-[330px] text-base leading-7 text-[rgba(16,19,16,.68)]">Pair this service with the other essentials for your business.</p>
-          </div>
-          <Link href="/services" className={`${actionBase} border border-[var(--fm-graphite-deep)] bg-transparent text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-graphite-deep)] hover:text-[var(--fm-lime)]`}>View all services <ArrowRight className="size-4" /></Link>
-        </div>
-      </section>
+      <section className="bg-[var(--fm-graphite-deep)] px-fm-6 py-24 sm:px-fm-10 lg:px-fm-14"><div className="mx-auto w-full max-w-[1400px]"><div className="mb-12 flex flex-col justify-between gap-fm-8 lg:flex-row lg:items-end"><div><SectionLabel>What this includes</SectionLabel><h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold text-[var(--fm-text-primary)]">A guided, documented workflow.</h2></div><p className="max-w-[330px] text-fm-body text-[var(--fm-text-secondary)]">{service.shortDescription}</p></div><div className="grid gap-fm-12 lg:grid-cols-[1.2fr_.8fr]"><div className="border-t border-[var(--fm-border)]">{[["01","Review your requirements","We start with your business, location, and intended use case."],["02","Prepare the application","Your information is organized into a clear submission workflow."],["03","Track the next step","Stay informed as the service moves through review and completion."]].map(([number,title,description])=><div key={number} className="grid grid-cols-[48px_1fr] gap-x-fm-4 border-b border-[var(--fm-border)] py-6"><span className="font-mono text-[11px] font-bold text-[var(--fm-lime-bright)]">{number}</span><strong className="text-lg text-[var(--fm-text-primary)]">{title}</strong><p className="col-start-2 mt-2 text-sm leading-6 text-[var(--fm-text-secondary)]">{description}</p></div>)}</div><Card variant="standard" tone="default" className="p-7 sm:p-8"><IconContainer className="mb-8 bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)]">FM</IconContainer><p className="max-w-[330px] text-lg leading-[1.45] text-[var(--fm-text-primary)]">Eligibility, documents, provider requirements and timing can vary by service.</p><div className="mt-6 border-l-2 border-[var(--fm-lime)] pl-3.5 text-sm leading-6 text-[var(--fm-text-secondary)]">Submit an inquiry and the team can confirm the current requirements.</div><Link href="/contact" className={`${actionBase} mt-7 bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-lime-bright)]`}>Request assistance <ArrowUpRight className="size-4" /></Link></Card></div></div></section>
+      <section className="bg-[var(--fm-surface)] px-fm-6 py-24 sm:px-fm-10 lg:px-fm-14"><div className="mx-auto w-full max-w-[1400px]"><div className="mb-10 flex flex-col justify-between gap-fm-8 lg:flex-row lg:items-end"><div><SectionLabel>Complete your setup</SectionLabel><h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold text-[var(--fm-text-primary)]">You may also need.</h2></div><Link href="/services" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--fm-lime)] transition-[transform,color] duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] hover:translate-x-1 hover:text-[var(--fm-lime-bright)]">Browse all services <ArrowUpRight className="size-4" /></Link></div><div className="grid gap-fm-4 md:grid-cols-3">{relatedServices.map((relatedService,index)=><Link key={relatedService.slug} href={`/services/${relatedService.slug}`} className="group block"><Card variant="interactive" tone="default" className="flex min-h-[300px] h-full flex-col items-start p-7"><span className="font-mono text-[10px] font-bold tracking-[.12em] text-[var(--fm-lime-bright)]">0{index+1}</span><h3 className="mt-7 max-w-[260px] font-display text-2xl font-bold tracking-[-.035em] text-[var(--fm-card-text)]">{relatedService.name}</h3><p className="mt-3 text-sm leading-6 text-[var(--fm-card-muted)]">{relatedService.shortDescription}</p><span className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[var(--fm-lime-bright)]">View service <ArrowRight className="size-4 transition-transform duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] group-hover:translate-x-1" /></span></Card></Link>)}</div></div></section>
+      <section className="bg-[var(--fm-lime)] px-fm-6 py-20 text-[var(--fm-graphite-deep)] sm:px-fm-10 lg:px-fm-14"><div className="mx-auto flex w-full max-w-[1400px] flex-col justify-between gap-fm-8 lg:flex-row lg:items-end"><div><SectionLabel className="text-[var(--fm-graphite-deep)]">Keep exploring</SectionLabel><h2 className="mt-4 max-w-[560px] font-display text-fm-section font-bold tracking-[-.025em]">Build the full stack.</h2><p className="mt-4 max-w-[330px] text-base leading-7 text-[rgba(16,19,16,.68)]">Pair this service with the other essentials for your business.</p></div><Link href="/services" className={`${actionBase} border border-[var(--fm-graphite-deep)] bg-transparent text-[var(--fm-graphite-deep)] hover:bg-[var(--fm-graphite-deep)] hover:text-[var(--fm-lime)]`}>View all services <ArrowRight className="size-4" /></Link></div></section>
     </main>
   );
 }

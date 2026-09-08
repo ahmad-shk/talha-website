@@ -39,6 +39,9 @@ export default function ApplicationPage() {
       applicationId={application.id}
       initialAnswers={application.answers}
       initialStep={application.currentStep}
+      packageSlug={application.packageSlug}
+      formationState={application.formationState}
+      variantSlug={application.variantSlug}
     />
   );
 }

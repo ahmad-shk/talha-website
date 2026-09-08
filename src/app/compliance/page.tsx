@@ -12,8 +12,8 @@ export default function Page() {
   return (
     <main className="min-h-screen overflow-hidden bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]">
       <section className="relative isolate overflow-hidden border-b border-[var(--fm-border)] px-6 pb-24 pt-28 sm:px-10 lg:px-14 lg:pt-36">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_34%,rgba(181,205,83,.15),transparent_30%),linear-gradient(120deg,var(--fm-graphite-deep),var(--fm-graphite))]" />
-        <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(181,205,83,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(181,205,83,.08)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_34%,color-mix(in_srgb,var(--fm-lime)_15%,transparent),transparent_30%),linear-gradient(120deg,var(--fm-graphite-deep),var(--fm-graphite))]" />
+        <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(color-mix(in_srgb,var(--fm-lime)_8%,transparent)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_srgb,var(--fm-lime)_8%,transparent)_1px,transparent_1px)] [background-size:64px_64px]" />
         <div className="relative z-10 mx-auto grid min-h-[600px] max-w-[1400px] items-center gap-16 lg:grid-cols-[1fr_.8fr]">
           <div>
             <div className="mb-7 flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[.18em] text-[var(--fm-lime)]"><span className="h-px w-9 bg-[var(--fm-lime)]" />Compliance / recurring obligations</div>
@@ -25,7 +25,7 @@ export default function Page() {
             <div className="absolute inset-0 rounded-full border border-[var(--fm-lime)]/15" /><div className="absolute inset-[12%] rounded-full border border-dashed border-[var(--fm-lime)]/25" /><div className="absolute inset-[25%] rounded-full border border-[var(--fm-lime)]/20" />
             <div className="absolute left-1/2 top-[2%] h-[96%] w-px bg-[var(--fm-lime)]/10" /><div className="absolute left-[2%] top-1/2 h-px w-[96%] bg-[var(--fm-lime)]/10" />
             <div className="absolute left-1/2 top-1/2 flex h-40 w-40 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-[var(--fm-lime)]/35 bg-[var(--fm-graphite)]/90 text-center shadow-[var(--fm-shadow-elevated)] backdrop-blur"><ShieldCheck className="h-8 w-8 text-[var(--fm-lime)]" /><span className="mt-3 font-mono text-[9px] uppercase tracking-[.18em] text-[var(--fm-text-tertiary)]">Status</span><strong className="mt-1 text-xl text-[var(--fm-lime-bright)]">COMPLIANT</strong></div>
-            {["12% 50%","88% 50%","50% 12%","50% 88%"].map((position, i) => { const [left, top] = position.split(" "); return <span key={i} className="absolute h-3 w-3 rounded-full bg-[var(--fm-lime)] shadow-[0_0_0_7px_rgba(181,205,83,.08)]" style={{ left, top }} />; })}
+            {["12% 50%","88% 50%","50% 12%","50% 88%"].map((position, i) => { const [left, top] = position.split(" "); return <span key={i} className="absolute h-3 w-3 rounded-full bg-[var(--fm-lime)] shadow-[0_0_0_7px_color-mix(in_srgb,var(--fm-lime)_8%,transparent)]" style={{ left, top }} />; })}
           </div>
         </div>
       </section>

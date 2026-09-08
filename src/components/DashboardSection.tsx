@@ -3,22 +3,22 @@ import { Activity, CalendarClock, FolderLock, LineChart } from "lucide-react";
 import { Card, IconContainer, SectionLabel } from "@/components/ui/design-system";
 
 const FEATURES = [
-  { icon: Activity, title: "LLC status in real time", desc: "Active, pending, or under review, formation progress always visible." },
+  { icon: Activity, title: "LLC to Company", desc: "Active, pending, or under review, formation progress always visible." },
   { icon: CalendarClock, title: "Zero missed deadlines", desc: "Annual reports, renewals, and state filings, filed on time, automatically." },
-  { icon: FolderLock, title: "Every document in one place", desc: "Operating agreement, EIN letter, state certificate, all in your secure dashboard." },
-  { icon: LineChart, title: "Full payment visibility", desc: "Every payment of your LLC, tracked under one dashboard." },
+  { icon: FolderLock, title: "Sub-Material to company formation and filing", desc: "Operating agreement, EIN letter, state certificate, all in your secure dashboard." },
+  { icon: LineChart, title: "LLC to Process", desc: "Every payment of your LLC, tracked under one dashboard." },
 ];
 
 export default function DashboardSection() {
   return (
     <section id="dashboard" aria-labelledby="dashboard-heading" className="relative isolate overflow-hidden bg-[var(--fm-graphite)] px-6 py-24">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(181,205,83,0.08),transparent_65%),radial-gradient(40%_40%_at_90%_80%,rgba(181,205,83,0.04),transparent_65%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(60%_50%_at_50%_0%,color-mix(in_srgb,var(--fm-lime)_8%,transparent),transparent_65%),radial-gradient(40%_40%_at_90%_80%,color-mix(in_srgb,var(--fm-lime)_4%,transparent),transparent_65%)]" />
       <div className="relative z-[1] mx-auto mb-16 max-w-[680px] text-center">
         <SectionLabel className="mb-[18px] inline-block">Dashboard</SectionLabel>
         <h2 id="dashboard-heading" className="mb-5 font-display font-extrabold text-[var(--fm-text-primary)]" style={{ fontSize: "clamp(34px, 4.5vw, 62px)", lineHeight: 1.08, letterSpacing: "-0.03em" }}>
           Your business, <span className="text-[var(--fm-lime)]">one dashboard away.</span>
         </h2>
-        <p className="mx-auto max-w-[56ch] text-[15.5px] font-medium leading-relaxed text-[var(--fm-text-secondary)] sm:text-[17.5px]">Track LLC status, documents, payments and renewals without chasing five different agents.</p>
+        <p className="mx-auto max-w-[56ch] text-[15.5px] font-medium leading-relaxed text-[var(--fm-text-secondary)] sm:text-[17.5px]">Track process status, documents, payments and renewals without chasing five different agents.</p>
       </div>
 
       <div className="relative z-[1] mx-auto max-w-[1100px]" style={{ perspective: 1200 }}>

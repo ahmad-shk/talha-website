@@ -31,7 +31,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { useApplicationState } from "@/components/application/ApplicationStateProvider";
-import { getServiceBySlug } from "@/lib/services";
+import { getServiceBySlug, getApplicationConfig } from "@/lib/services";
 import { calculateApplicationPricing } from "@/lib/pricing";
 import { getDocumentsForService } from "@/lib/documents/catalog";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -110,24 +110,22 @@ export default function DashboardPage() {
   const customerName = name || "Customer";
 
   const service = application ? getServiceBySlug(application.serviceSlug) : undefined;
-  const additionalServices =
-    application && Array.isArray(application.answers.additional_services)
-      ? application.answers.additional_services.map(String)
-      : [];
   const pricing = application
     ? calculateApplicationPricing({
         serviceSlug: application.serviceSlug,
         packageSlug: application.packageSlug,
-        additionalServices,
+        formationState: application.formationState,
+        variantSlug: application.variantSlug,
+        addOnSlugs: application.addOnSlugs,
       })
     : null;
   const progress = application
-    ? Math.min(
-        100,
-        Math.round(
-          ((application.currentStep + (application.status !== "draft" ? 1 : 0)) / 5) * 100,
-        ),
-      )
+    ? (() => {
+        const stepCount = getApplicationConfig(application.serviceSlug)?.steps.length ?? 0;
+        if (stepCount <= 0) return 0;
+        const step = Math.min(Math.max(application.currentStep, 0), stepCount - 1);
+        return Math.min(100, Math.max(0, Math.round(((step + 1) / stepCount) * 100)));
+      })()
     : 0;
   const documents = application ? getDocumentsForService(application.serviceSlug) : [];
 
@@ -510,41 +508,41 @@ export default function DashboardPage() {
             />
           )}
         </main>
-      </div>
 
-      {newLLC && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
-          <Card variant="feature" className="w-full max-w-[430px] p-6">
-            <div className="flex items-start justify-between">
-              <div>
-                <IconContainer>
-                  <Building2 size={22} />
-                </IconContainer>
-                <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
-                  Start a New LLC
-                </h2>
-                <p className="mt-1 text-sm text-[var(--fm-text-secondary)]">
-                  Begin your LLC registration.
-                </p>
+        {newLLC && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4">
+            <Card variant="feature" className="w-full max-w-[430px] p-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <IconContainer>
+                    <Building2 size={22} />
+                  </IconContainer>
+                  <h2 className="mt-4 text-xl font-semibold tracking-[-0.03em]">
+                    Start a New LLC
+                  </h2>
+                  <p className="mt-1 text-sm text-[var(--fm-text-secondary)]">
+                    Begin your LLC registration.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setNewLLC(false)}
+                  className="rounded-[var(--fm-radius-sm)] p-1.5 text-[var(--fm-text-tertiary)] hover:text-[var(--fm-text-primary)]"
+                >
+                  <X size={18} />
+                </button>
               </div>
-              <button
+              <Link
+                href="/usa-llc"
                 onClick={() => setNewLLC(false)}
-                className="rounded-[var(--fm-radius-sm)] p-1.5 text-[var(--fm-text-tertiary)] hover:text-[var(--fm-text-primary)]"
+                className="mt-6 flex h-11 w-full items-center justify-center rounded-[var(--fm-radius-md)] bg-[var(--fm-lime)] text-sm font-semibold text-[var(--fm-graphite-deep)] transition-colors hover:bg-[var(--fm-lime-bright)]"
               >
-                <X size={18} />
-              </button>
-            </div>
-            <Link
-              href="/usa-llc"
-              onClick={() => setNewLLC(false)}
-              className="mt-6 flex h-11 w-full items-center justify-center rounded-[var(--fm-radius-md)] bg-[var(--fm-lime)] text-sm font-semibold text-[var(--fm-graphite-deep)] transition-colors hover:bg-[var(--fm-lime-bright)]"
-            >
-              Continue
-              <Plus size={17} className="ml-2" />
-            </Link>
-          </Card>
-        </div>
-      )}
+                Continue
+                <Plus size={17} className="ml-2" />
+              </Link>
+            </Card>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

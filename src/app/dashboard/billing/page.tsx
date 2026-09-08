@@ -38,15 +38,14 @@ export default function BillingPage() {
   }
 
   const service = getServiceBySlug(application.serviceSlug);
-  const additionalServices = Array.isArray(application.answers.additional_services)
-    ? application.answers.additional_services.map(String)
-    : [];
   const pricing = calculateApplicationPricing({
     serviceSlug: application.serviceSlug,
     packageSlug: application.packageSlug,
-    additionalServices,
+    formationState: application.formationState,
+    variantSlug: application.variantSlug,
+    addOnSlugs: application.addOnSlugs,
   });
-  const customerEmail = String(application.answers.customer_email ?? "");
+  const customerEmail = String(application.answers.customer_email ?? application.answers.email ?? "");
   const paymentReady = application.status === "ready_for_payment" || application.status === "draft";
 
   return (

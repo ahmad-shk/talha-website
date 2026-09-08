@@ -5,158 +5,33 @@ import type { ApplicationField, ApplicationConfig } from "@/lib/services";
 import { useApplicationState } from "./ApplicationStateProvider";
 import ApplicationProgress from "./ApplicationProgress";
 import ApplicationStep from "./ApplicationStep";
+import ApplicationDocuments from "./ApplicationDocuments";
 import ApplicationNavigation from "./ApplicationNavigation";
 import { Card, SectionLabel, StatusBadge } from "@/components/ui/design-system";
 import { Button } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/interaction-controls";
 
-type ApplicationShellProps = {
-  config: ApplicationConfig;
-  serviceName: string;
-  applicationId?: string;
-  initialAnswers?: Record<string, unknown>;
-  initialStep?: number;
-};
-
+type ApplicationShellProps = { config: ApplicationConfig; serviceName: string; applicationId?: string; initialAnswers?: Record<string, unknown>; initialStep?: number; packageSlug?: string; formationState?: string; variantSlug?: string };
 const LOCKED_STATUSES = new Set(["paid", "processing", "completed", "cancelled"]);
-
 type StatusTone = "success" | "info" | "warning" | "danger" | "neutral";
-
-function getStatusTone(status: string): StatusTone {
-  if (status === "completed") return "success";
-  if (["paid", "processing"].includes(status)) return "info";
-  if (["in_review", "ready_for_payment"].includes(status)) return "warning";
-  if (status === "cancelled") return "danger";
-  return "neutral";
-}
-
-function getStatusLabel(status: string) {
-  return status.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-export default function ApplicationShell({ config, serviceName, applicationId, initialAnswers = {}, initialStep = 0 }: ApplicationShellProps) {
-  const { application, startApplication, updateApplication } = useApplicationState();
-  const matchingApplication = application?.serviceSlug === config.serviceSlug ? application : null;
-  const effectiveApplicationId = applicationId ?? matchingApplication?.id;
-  const readOnly = Boolean(matchingApplication && LOCKED_STATUSES.has(matchingApplication.status));
-  const [currentStep, setCurrentStep] = useState(() => Math.min(Math.max(initialStep, 0), Math.max(config.steps.length - 1, 0)));
-  const [answers, setAnswers] = useState<Record<string, unknown>>(initialAnswers);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [showReview, setShowReview] = useState(false);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (applicationId || matchingApplication) return;
-    void startApplication({ serviceSlug: config.serviceSlug }).catch((error) => console.error("Unable to create application:", error));
-  }, [applicationId, matchingApplication, startApplication, config.serviceSlug]);
-
-  useEffect(() => {
-    if (!matchingApplication) return;
-    setAnswers(matchingApplication.answers);
-    setCurrentStep(Math.min(Math.max(matchingApplication.currentStep, 0), Math.max(config.steps.length - 1, 0)));
-  }, [matchingApplication, config.steps.length]);
-
-  const stepCount = config.steps.length;
-  const stepProgress = useMemo(() => config.steps.map((item) => ({ id: item.id, title: item.title })), [config.steps]);
-
-  function updateAnswer(field: ApplicationField, value: unknown) {
-    if (readOnly) return;
-    setAnswers((current) => ({ ...current, [field.key]: value }));
-    setErrors((current) => { const next = { ...current }; delete next[field.key]; return next; });
-  }
-
-  function validateStep() {
-    const step = config.steps[currentStep];
-    if (!step) return false;
-    const nextErrors: Record<string, string> = {};
-    for (const field of step.fields) {
-      const value = answers[field.key];
-      const empty = value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0);
-      if (field.required && empty) { nextErrors[field.key] = "This field is required."; continue; }
-      if (typeof value === "string" && field.validation?.minLength !== undefined && value.length < field.validation.minLength) nextErrors[field.key] = `Please enter at least ${field.validation.minLength} characters.`;
-      if (typeof value === "string" && field.validation?.maxLength !== undefined && value.length > field.validation.maxLength) nextErrors[field.key] = `Please enter no more than ${field.validation.maxLength} characters.`;
-      if (typeof value === "number" && field.validation?.min !== undefined && value < field.validation.min) nextErrors[field.key] = `The minimum value is ${field.validation.min}.`;
-      if (typeof value === "number" && field.validation?.max !== undefined && value > field.validation.max) nextErrors[field.key] = `The maximum value is ${field.validation.max}.`;
-    }
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  }
-
-  async function saveApplication(nextStep: number, status = matchingApplication?.status) {
-    if (readOnly || !matchingApplication) return false;
-    setSaving(true);
-    try {
-      await updateApplication({ currentStep: nextStep, answers, ...(status ? { status } : {}) });
-      return true;
-    } catch (error) {
-      console.error("Unable to save application:", error);
-      setErrors((current) => ({ ...current, _application: "We couldn't save your application. Please try again." }));
-      return false;
-    } finally { setSaving(false); }
-  }
-
-  async function handleNext() {
-    if (readOnly || saving || !validateStep()) return;
-    if (currentStep === stepCount - 1) {
-      const saved = await saveApplication(currentStep, "ready_for_payment");
-      if (saved) setShowReview(true);
-      return;
-    }
-    const nextStep = currentStep + 1;
-    const saved = await saveApplication(nextStep, "draft");
-    if (!saved) return;
-    setCurrentStep(nextStep);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function handleBack() {
-    if (readOnly || saving) return;
-    if (showReview) { setShowReview(false); return; }
-    if (currentStep === 0) return;
-    const nextStep = currentStep - 1;
-    const saved = await saveApplication(nextStep, "draft");
-    if (!saved) return;
-    setCurrentStep(nextStep);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function continueToCheckout() {
-    if (readOnly || !effectiveApplicationId || saving) return;
-    const saved = await saveApplication(currentStep, "ready_for_payment");
-    if (!saved) return;
-    window.location.href = `/checkout?applicationId=${encodeURIComponent(effectiveApplicationId)}`;
-  }
-
-  function getDisplayValue(value: unknown): string {
-    if (Array.isArray(value)) return value.join(", ");
-    if (value === undefined || value === null || value === "") return "Not provided";
-    return String(value);
-  }
-
-  if (!matchingApplication && applicationId) return <main className="flex min-h-screen items-center justify-center bg-[var(--fm-graphite-deep)] px-6 text-[var(--fm-text-primary)]"><LoadingState label="Loading your application..." /></main>;
-
-  if (readOnly) {
-    const lockedApplication = matchingApplication;
-    if (!lockedApplication) return null;
-    return (
-      <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]">
-        <div className="border-b border-[var(--fm-border-soft)] bg-[var(--fm-graphite)]"><div className="mx-auto max-w-5xl px-4 py-5 md:px-6"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><SectionLabel>Audvertax</SectionLabel><p className="mt-1 font-semibold">{serviceName}</p></div><StatusBadge status={getStatusTone(lockedApplication.status)}><span className="h-1.5 w-1.5 rounded-full bg-current" />{lockedApplication.status === "paid" ? "Paid" : getStatusLabel(lockedApplication.status)}</StatusBadge></div></div></div>
-        <main className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
-          <div className="mb-8"><SectionLabel>Application details</SectionLabel><h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">Your application</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--fm-text-secondary)]">This application is locked because it has already been submitted for processing. Your saved information is shown below for reference.</p></div>
-          <Card className="mb-8 border-[var(--fm-border-accent)] bg-[var(--fm-lime-soft)] p-5 text-sm text-[var(--fm-text-secondary)]">{lockedApplication.status === "paid" ? "Payment has been received. Your application can no longer be edited." : "This application can no longer be edited."}</Card>
-          <div className="mb-8"><ApplicationProgress steps={stepProgress} currentStep={stepCount - 1} /></div>
-          <div className="space-y-5">{config.steps.map((reviewStep) => <Card key={reviewStep.id} className="p-5 md:p-6"><div className="mb-5"><h2 className="font-semibold">{reviewStep.title}</h2><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">{reviewStep.description}</p></div><div className="divide-y divide-[var(--fm-border-soft)]">{reviewStep.fields.map((field) => <div key={field.key} className="grid gap-1 py-4 first:pt-0 last:pb-0 md:grid-cols-2"><div className="text-sm text-[var(--fm-text-secondary)]">{field.label}</div><div className="text-sm font-medium md:text-right">{getDisplayValue(lockedApplication.answers[field.key])}</div></div>)}</div></Card>)}</div>
-        </main>
-      </div>
-    );
-  }
-
-  const step = config.steps[currentStep];
-  if (!step) return null;
-
-  if (showReview) return (
-    <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]"><div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 md:py-12"><Button type="button" variant="ghost" onClick={handleBack} disabled={saving} className="mb-6 px-0">← Back to application</Button><SectionLabel>Final review</SectionLabel><h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">Review your application</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--fm-text-secondary)]">Check your information before continuing to checkout.</p><div className="mt-8 space-y-5">{config.steps.map((reviewStep, index) => <Card key={reviewStep.id} className="p-5 md:p-6"><div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="font-semibold">{reviewStep.title}</h2><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">{reviewStep.description}</p></div><Button type="button" variant="ghost" size="sm" disabled={saving} onClick={() => { setCurrentStep(index); setShowReview(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Edit</Button></div><div className="divide-y divide-[var(--fm-border-soft)]">{reviewStep.fields.map((field) => <div key={field.key} className="grid gap-1 py-4 first:pt-0 last:pb-0 md:grid-cols-2"><div className="text-sm text-[var(--fm-text-secondary)]">{field.label}</div><div className="text-sm font-medium md:text-right">{getDisplayValue(answers[field.key])}</div></div>)}</div></Card>)}</div><Card variant="elevated" className="mt-8 p-6">{errors._application && <p className="mb-4 rounded-[var(--fm-radius-md)] border border-[var(--fm-danger)]/40 bg-[var(--fm-danger-soft)] px-4 py-3 text-sm text-[var(--fm-danger)]" role="alert">{errors._application}</p>}<div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><p className="font-semibold">Application complete</p><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">Your application is ready for checkout.</p></div><Button type="button" size="lg" disabled={!effectiveApplicationId || saving} onClick={() => void continueToCheckout()}>{saving ? "Saving..." : "Continue to checkout"}</Button></div></Card></div></div>
-  );
-
-  return <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]"><div className="border-b border-[var(--fm-border-soft)] bg-[var(--fm-graphite)]"><div className="mx-auto max-w-5xl px-4 py-5 md:px-6"><div className="flex items-center justify-between gap-4"><div><SectionLabel>Audvertax</SectionLabel><p className="mt-1 font-semibold">{serviceName}</p></div><span className="rounded-[var(--fm-radius-pill)] border border-[var(--fm-border)] bg-[var(--fm-surface)] px-3 py-1.5 font-mono text-[11px] text-[var(--fm-text-secondary)]">{saving ? "Saving..." : "Saved automatically"}</span></div></div></div><main className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12"><div className="mb-10"><ApplicationProgress steps={stepProgress} currentStep={currentStep} /></div>{errors._application && <div className="mb-5 rounded-[var(--fm-radius-md)] border border-[var(--fm-danger)]/40 bg-[var(--fm-danger-soft)] px-4 py-3 text-sm text-[var(--fm-danger)]" role="alert">{errors._application}</div>}<Card className="p-5 md:p-8"><ApplicationStep step={step} answers={answers} errors={errors} onChange={updateAnswer} /><div className="mt-10"><ApplicationNavigation currentStep={currentStep} totalSteps={stepCount} onBack={() => void handleBack()} onNext={() => void handleNext()} isLastStep={currentStep === stepCount - 1} /></div></Card></main></div>;
-}
+function getStatusTone(status: string): StatusTone { if (status === "completed") return "success"; if (["paid", "processing"].includes(status)) return "info"; if (["in_review", "ready_for_payment"].includes(status)) return "warning"; if (status === "cancelled") return "danger"; return "neutral"; }
+function getStatusLabel(status: string) { return status.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()); }
+function conditionMatches(field: ApplicationField, answers: Record<string, unknown>) { if (!field.condition) return true; const actual = answers[field.condition.field]; if (field.condition.equals !== undefined) return actual === field.condition.equals; if (field.condition.notEquals !== undefined) return actual !== field.condition.notEquals; return true; }
+function isEmpty(value: unknown) { return value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0); }
+function validateField(field: ApplicationField, value: unknown, answers: Record<string, unknown>, errors: Record<string, string>, keyPrefix = "") { if (!conditionMatches(field, answers)) return; const key = keyPrefix ? `${keyPrefix}.${field.key}` : field.key; if (field.required && isEmpty(value)) { errors[key] = "This field is required."; return; } if (field.type === "repeatable") { if (!Array.isArray(value)) return; value.forEach((item, index) => { if (!item || typeof item !== "object") return; const itemAnswers = item as Record<string, unknown>; for (const itemField of field.itemFields ?? []) validateField(itemField, itemAnswers[itemField.key], itemAnswers, errors, `${key}.${index}`); }); return; } if (typeof value === "string" && field.validation?.minLength !== undefined && value.length < field.validation.minLength) errors[key] = `Please enter at least ${field.validation.minLength} characters.`; if (typeof value === "string" && field.validation?.maxLength !== undefined && value.length > field.validation.maxLength) errors[key] = `Please enter no more than ${field.validation.maxLength} characters.`; if (typeof value === "number" && field.validation?.min !== undefined && value < field.validation.min) errors[key] = `The minimum value is ${field.validation.min}.`; if (typeof value === "number" && field.validation?.max !== undefined && value > field.validation.max) errors[key] = `The maximum value is ${field.validation.max}.`; }
+function buildMembers(answers: Record<string, unknown>, existingMembers: { id: string }[]) { const owner = { id: existingMembers[0]?.id ?? crypto.randomUUID(), fullName: typeof answers.owner_full_name === "string" ? answers.owner_full_name : "", country: typeof answers.owner_country === "string" ? answers.owner_country : undefined, dateOfBirth: typeof answers.owner_date_of_birth === "string" ? answers.owner_date_of_birth : undefined, ownershipPercentage: answers.company_type === "single_member_llc" ? 100 : (typeof answers.owner_ownership_percentage === "number" ? answers.owner_ownership_percentage : undefined), address: typeof answers.residential_address === "string" ? answers.residential_address : undefined }; if (answers.company_type !== "multi_member_llc") return [owner]; const additional = Array.isArray(answers.members) ? answers.members.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object") : []; return [owner, ...additional.map((member, index) => ({ id: existingMembers[index + 1]?.id ?? crypto.randomUUID(), fullName: typeof member.full_name === "string" ? member.full_name : "", country: typeof member.country === "string" ? member.country : undefined, dateOfBirth: typeof member.date_of_birth === "string" ? member.date_of_birth : undefined, ownershipPercentage: typeof member.ownership_percentage === "number" ? member.ownership_percentage : undefined, address: typeof member.address === "string" ? member.address : undefined }))]; }
+export default function ApplicationShell({ config, serviceName, applicationId, initialAnswers = {}, initialStep = 0, packageSlug, formationState, variantSlug }: ApplicationShellProps) { const { application, startApplication, updateApplication, refreshApplication } = useApplicationState(); const matchingApplication = application?.serviceSlug === config.serviceSlug ? application : null; const effectiveApplicationId = applicationId ?? matchingApplication?.id; const readOnly = Boolean(matchingApplication && LOCKED_STATUSES.has(matchingApplication.status)); const [currentStep, setCurrentStep] = useState(() => Math.min(Math.max(initialStep, 0), Math.max(config.steps.length - 1, 0))); const [answers, setAnswers] = useState<Record<string, unknown>>(initialAnswers); const [errors, setErrors] = useState<Record<string, string>>({}); const [showReview, setShowReview] = useState(false); const [saving, setSaving] = useState(false);
+useEffect(() => { if (applicationId || matchingApplication) return; if (!packageSlug && !variantSlug) return; void startApplication({ serviceSlug: config.serviceSlug, packageSlug, formationState, variantSlug }).catch((error) => console.error("Unable to create application:", error)); }, [applicationId, matchingApplication, startApplication, config.serviceSlug, packageSlug, formationState, variantSlug]);
+useEffect(() => { if (!matchingApplication) return; setAnswers(matchingApplication.answers); setCurrentStep(Math.min(Math.max(matchingApplication.currentStep, 0), Math.max(config.steps.length - 1, 0))); }, [matchingApplication, config.steps.length]);
+const stepCount = config.steps.length; const stepProgress = useMemo(() => config.steps.map((item) => ({ id: item.id, title: item.title })), [config.steps]);
+function updateAnswer(field: ApplicationField, value: unknown) { if (readOnly) return; setAnswers((current) => ({ ...current, [field.key]: value })); setErrors((current) => { const next = { ...current }; delete next[field.key]; return next; }); }
+function validateStep() { const step = config.steps[currentStep]; if (!step) return false; if (step.id === "documents") { const documents = matchingApplication?.documents ?? []; if (config.serviceSlug === "usa-llc") { const members = matchingApplication?.members ?? []; const missing = members.some((member) => !["member-identity", "member-address-proof"].every((type) => documents.some((document) => document.ownerType === "member" && document.ownerId === member.id && document.documentType === type && document.status !== "rejected"))); if (missing) { setErrors({ documents: "Please upload both required documents for every company member." }); return false; } } if (config.serviceSlug === "itin-processing") { const hasPassport = documents.some((document) => document.ownerType === "application" && document.documentType === "applicant-identity" && document.status !== "rejected"); if (!hasPassport) { setErrors({ documents: "Please upload the applicant's scanned passport before continuing." }); return false; } } if (config.serviceSlug === "ein-without-ssn") { const documentType = answers.formation_document_type === "ss4" ? "ss4" : "articles-of-organization"; const label = documentType === "ss4" ? "SS-4" : "Articles of Organization"; const hasRequiredDocument = documents.some((document) => document.ownerType === "application" && document.documentType === documentType && document.status !== "rejected"); if (!hasRequiredDocument) { setErrors({ documents: `Please upload the selected ${label} document before continuing.` }); return false; } } setErrors({}); return true; } const nextErrors: Record<string, string> = {}; for (const field of step.fields) validateField(field, answers[field.key], answers, nextErrors); if (config.serviceSlug === "usa-llc" && step.id === "company") { const ownerPercentage = answers.owner_ownership_percentage; const additionalMembers = answers.company_type === "multi_member_llc" && Array.isArray(answers.members) ? answers.members.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object") : []; const percentages = [ownerPercentage, ...additionalMembers.map((member) => member.ownership_percentage)]; if (percentages.every((percentage) => typeof percentage === "number" && Number.isFinite(percentage))) { const ownershipTotal = percentages.reduce<number>((total, percentage) => total + (percentage as number), 0); if (Math.abs(ownershipTotal - 100) > 0.01) nextErrors.members = `Company member ownership percentages must total 100%. Current total: ${ownershipTotal}%.`; } } setErrors(nextErrors); return Object.keys(nextErrors).length === 0; }
+async function saveApplication(nextStep: number, status = matchingApplication?.status) { if (readOnly || !matchingApplication) return false; setSaving(true); try { const members = config.serviceSlug === "usa-llc" ? buildMembers(answers, matchingApplication.members) : matchingApplication.members; await updateApplication({ currentStep: nextStep, answers, ...(packageSlug ? { packageSlug } : {}), ...(formationState ? { formationState } : {}), ...(variantSlug ? { variantSlug } : {}), members, ...(status ? { status } : {}) }); return true; } catch (error) { console.error("Unable to save application:", error); setErrors((current) => ({ ...current, _application: error instanceof Error ? error.message : "We couldn't save your application. Please try again." })); return false; } finally { setSaving(false); } }
+async function handleNext() { if (readOnly || saving || !validateStep()) return; if (currentStep === stepCount - 1) { const saved = await saveApplication(currentStep, "ready_for_payment"); if (saved) setShowReview(true); return; } const nextStep = currentStep + 1; const saved = await saveApplication(nextStep, "draft"); if (!saved) return; setCurrentStep(nextStep); window.scrollTo({ top: 0, behavior: "smooth" }); }
+async function handleBack() { if (readOnly || saving) return; if (showReview) { setShowReview(false); return; } if (currentStep === 0) return; const nextStep = currentStep - 1; const saved = await saveApplication(nextStep, "draft"); if (!saved) return; setCurrentStep(nextStep); window.scrollTo({ top: 0, behavior: "smooth" }); }
+async function continueToCheckout() { if (readOnly || !effectiveApplicationId || saving) return; const saved = await saveApplication(currentStep, "ready_for_payment"); if (!saved) return; window.location.href = `/checkout?applicationId=${encodeURIComponent(effectiveApplicationId)}`; }
+function getDisplayValue(value: unknown): string { if (Array.isArray(value)) return value.join(", "); if (value === undefined || value === null || value === "") return "Not provided"; return String(value); }
+if (!matchingApplication && applicationId) return <main className="flex min-h-screen items-center justify-center bg-[var(--fm-graphite-deep)] px-6 text-[var(--fm-text-primary)]"><LoadingState label="Loading your application..." /></main>;
+if (readOnly) { const lockedApplication = matchingApplication; if (!lockedApplication) return null; return <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]"><div className="border-b border-[var(--fm-border-soft)] bg-[var(--fm-graphite)]"><div className="mx-auto max-w-5xl px-4 py-5 md:px-6"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><SectionLabel>Audvertax</SectionLabel><p className="mt-1 font-semibold">{serviceName}</p></div><StatusBadge status={getStatusTone(lockedApplication.status)}><span className="h-1.5 w-1.5 rounded-full bg-current" />{lockedApplication.status === "paid" ? "Paid" : getStatusLabel(lockedApplication.status)}</StatusBadge></div></div></div><main className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12"><div className="mb-8"><SectionLabel>Application details</SectionLabel><h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">Your application</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--fm-text-secondary)]">This application is locked because it has already been submitted for processing. Your saved information is shown below for reference.</p></div><Card className="mb-8 border-[var(--fm-border-accent)] bg-[var(--fm-lime-soft)] p-5 text-sm text-[var(--fm-text-secondary)]">{lockedApplication.status === "paid" ? "Payment has been received. Your application can no longer be edited." : "This application can no longer be edited."}</Card><div className="mb-8"><ApplicationProgress steps={stepProgress} currentStep={stepCount - 1} /></div><div className="space-y-5">{config.steps.map((reviewStep) => <Card key={reviewStep.id} className="p-5 md:p-6"><div className="mb-5"><h2 className="font-semibold">{reviewStep.title}</h2><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">{reviewStep.description}</p></div><div className="divide-y divide-[var(--fm-border-soft)]">{reviewStep.fields.map((field) => conditionMatches(field, lockedApplication.answers) ? <div key={field.key} className="grid gap-1 py-4 first:pt-0 last:pb-0 md:grid-cols-2"><div className="text-sm text-[var(--fm-text-secondary)]">{field.label}</div><div className="text-sm font-medium md:text-right">{getDisplayValue(lockedApplication.answers[field.key])}</div></div> : null)}</div></Card>)}</div></main></div>; }
+const step = config.steps[currentStep]; if (!step) return null; if (showReview) return <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]"><div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 md:py-12"><Button type="button" variant="ghost" onClick={handleBack} disabled={saving} className="mb-6 px-0">← Back to application</Button><SectionLabel>Final review</SectionLabel><h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">Review your application</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--fm-text-secondary)]">Check your information before continuing to checkout.</p><div className="mt-8 space-y-5">{config.steps.map((reviewStep, index) => <Card key={reviewStep.id} className="p-5 md:p-6"><div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="font-semibold">{reviewStep.title}</h2><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">{reviewStep.description}</p></div><Button type="button" variant="ghost" size="sm" disabled={saving} onClick={() => { setCurrentStep(index); setShowReview(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Edit</Button></div><div className="divide-y divide-[var(--fm-border-soft)]">{reviewStep.fields.map((field) => conditionMatches(field, answers) ? <div key={field.key} className="grid gap-1 py-4 first:pt-0 last:pb-0 md:grid-cols-2"><div className="text-sm text-[var(--fm-text-secondary)]">{field.label}</div><div className="text-sm font-medium md:text-right">{getDisplayValue(answers[field.key])}</div></div> : null)}</div>{reviewStep.id === "documents" && <p className="text-sm text-[var(--fm-lime-bright)]">Required documents have been uploaded.</p>}</Card>)}</div><Card variant="elevated" className="mt-8 p-6">{errors._application && <p className="mb-4 rounded-[var(--fm-radius-md)] border border-[var(--fm-danger)]/40 bg-[var(--fm-danger-soft)] px-4 py-3 text-sm text-[var(--fm-danger)]" role="alert">{errors._application}</p>}<div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><p className="font-semibold">Application complete</p><p className="mt-1 text-sm text-[var(--fm-text-secondary)]">Your application is ready for checkout.</p></div><Button type="button" size="lg" disabled={!effectiveApplicationId || saving} onClick={() => void continueToCheckout()}>{saving ? "Saving..." : "Continue to checkout"}</Button></div></Card></div></div>;
+return <div className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]"><div className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6 md:py-10"><ApplicationProgress steps={stepProgress} currentStep={currentStep} /><div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]"><Card variant="elevated" className="p-6 md:p-8"><SectionLabel>Application</SectionLabel><h1 className="mt-3 text-3xl font-semibold tracking-[-0.045em]">{step.title}</h1><p className="mt-2 text-sm leading-6 text-[var(--fm-text-secondary)]">{step.description}</p><div className="mt-8"><ApplicationStep step={step} answers={answers} errors={errors} onChange={updateAnswer} /></div><ApplicationDocuments applicationId={effectiveApplicationId} /></Card><aside><Card className="p-5"><p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--fm-text-tertiary)]">Application</p><p className="mt-2 font-semibold">{serviceName}</p>{packageSlug && <p className="mt-2 text-sm text-[var(--fm-text-secondary)]">Package: {packageSlug}</p>}{variantSlug && <p className="mt-1 text-sm text-[var(--fm-text-secondary)]">Variant: {variantSlug}</p>}{formationState && <p className="mt-1 text-sm text-[var(--fm-text-secondary)]">Jurisdiction: {formationState}</p>}</Card></aside></div><ApplicationNavigation currentStep={currentStep} totalSteps={stepCount} onBack={handleBack} onNext={handleNext} loading={saving} /></div></div>; }

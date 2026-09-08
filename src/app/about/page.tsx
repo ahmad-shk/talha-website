@@ -38,8 +38,8 @@ export default function About() {
   return (
     <main ref={pageRef} className="fm-page overflow-hidden">
       <section className="relative isolate min-h-[92dvh] overflow-hidden bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_74%_48%,rgba(181,205,83,.13),transparent_34%),linear-gradient(110deg,var(--fm-graphite-deep)_0%,var(--fm-graphite)_52%,var(--fm-graphite-deep)_100%)]" />
-        <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(191,211,104,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(191,211,104,.08)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_74%_48%,var(--fm-hero-glow),transparent_34%),linear-gradient(110deg,var(--fm-graphite-deep)_0%,var(--fm-graphite)_52%,var(--fm-graphite-deep)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(color-mix(in_srgb,var(--fm-lime)_8%,transparent)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_srgb,var(--fm-lime)_8%,transparent)_1px,transparent_1px)] [background-size:64px_64px]" />
         <div className="relative z-[2] mx-auto grid min-h-[92dvh] w-full max-w-[1400px] grid-cols-1 items-center gap-10 px-6 py-24 sm:px-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-4 lg:px-14">
           <div className="relative z-[3] max-w-[690px] lg:pb-6">
             <div data-about-label className="mb-7 inline-flex items-center gap-3 rounded-[var(--fm-radius-pill)] border border-[var(--fm-lime)]/25 bg-[var(--fm-lime)]/[.07] px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[var(--fm-lime-bright)]"><span className="size-2 rounded-full bg-[var(--fm-lime)]" />About Audvertax</div>
@@ -55,16 +55,16 @@ export default function About() {
             </div>
           </div>
           <div data-about-visual className="relative flex min-h-[500px] items-center justify-center lg:min-h-[620px]">
-            <div className="absolute inset-[10%] rounded-full bg-[var(--fm-lime)]/10 blur-[90px]" />
+            <div className="absolute inset-[10%] rounded-full bg-[var(--fm-hero-glow-soft)] blur-[var(--fm-hero-glow-blur)]" />
             <div data-orbit className="relative h-[440px] w-[440px] max-w-[88vw] max-h-[88vw] sm:h-[520px] sm:w-[520px]">
               <div className="absolute inset-0 rounded-full border border-[var(--fm-lime)]/10" />
               <div className="absolute inset-[8%] rounded-full border border-[var(--fm-lime)]/25 border-dashed [transform:rotateX(68deg)]" />
               <div className="absolute inset-[16%] rounded-full border border-[var(--fm-lime)]/20 [transform:rotateY(66deg)]" />
-              <div className="absolute inset-[21%] rounded-full border border-[var(--fm-lime)]/30 shadow-[inset_0_0_80px_rgba(181,205,83,.05)]">
+              <div className="absolute inset-[21%] rounded-full border border-[var(--fm-lime)]/30 shadow-[inset_0_0_80px_color-mix(in_srgb,var(--fm-lime)_5%,transparent)]">
                 <div className="absolute inset-[14%] rounded-full border border-[var(--fm-lime)]/12" />
                 {GRID_LINES.map((opacity, i) => <div key={`h-${i}`} className="absolute left-[12%] h-px w-[76%] bg-[var(--fm-lime)]" style={{ top: `${32 + i * 18}%`, opacity: opacity / 100 }} />)}
                 {GRID_LINES.map((opacity, i) => <div key={`v-${i}`} className="absolute top-[12%] h-[76%] w-px bg-[var(--fm-lime)]" style={{ left: `${32 + i * 18}%`, opacity: opacity / 100 }} />)}
-                {[[24,34],[69,28],[77,58],[31,72],[58,67],[44,46]].map(([x,y], i) => <span key={i} data-node className="absolute size-2.5 rounded-full bg-[var(--fm-lime)] shadow-[0_0_0_5px_rgba(181,205,83,.08)]" style={{ left: `${x}%`, top: `${y}%` }} />)}
+                {[[24,34],[69,28],[77,58],[31,72],[58,67],[44,46]].map(([x,y], i) => <span key={i} data-node className="absolute size-2.5 rounded-full bg-[var(--fm-lime)] shadow-[0_0_0_5px_color-mix(in_srgb,var(--fm-lime)_8%,transparent)]" style={{ left: `${x}%`, top: `${y}%` }} />)}
               </div>
               <div className="absolute left-1/2 top-1/2 flex size-36 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--fm-lime)]/35 bg-[var(--fm-graphite)]/90 shadow-[var(--fm-shadow-elevated)] backdrop-blur-md"><div className="text-center"><Compass className="mx-auto h-7 w-7 text-[var(--fm-lime)]" /><div className="mt-3 font-mono text-[9px] uppercase tracking-[.18em] text-[var(--fm-text-tertiary)]">Our mission</div><div className="mt-2 text-xl font-bold text-[var(--fm-lime-bright)]">CONNECT</div></div></div>
             </div>
@@ -84,10 +84,10 @@ export default function About() {
       </section>
 
       <section className="relative overflow-hidden bg-[var(--fm-graphite-deep)] px-6 py-20 text-[var(--fm-text-primary)] sm:px-10 sm:py-24 lg:py-28">
-        <div className="pointer-events-none absolute right-[-100px] top-[-180px] size-[520px] rounded-full border border-[var(--fm-lime)]/10 shadow-[0_0_0_34px_rgba(181,205,83,.025),0_0_0_68px_rgba(181,205,83,.02)]" />
+        <div className="pointer-events-none absolute right-[-100px] top-[-180px] size-[520px] rounded-full border border-[var(--fm-lime)]/10 shadow-[0_0_0_34px_color-mix(in_srgb,var(--fm-lime)_2.5%,transparent),0_0_0_68px_color-mix(in_srgb,var(--fm-lime)_2%,transparent)]" />
         <div className="mx-auto grid max-w-[1180px] gap-12 lg:grid-cols-[1fr_.75fr] lg:gap-20">
           <div data-reveal><SectionLabel>What Audvertax emphasizes</SectionLabel><h2 className="mt-4 max-w-[720px] font-display text-4xl font-bold tracking-[-.05em] sm:text-5xl">Clear onboarding. Centralized information. A business that can keep moving.</h2><div className="mt-9 grid gap-3 sm:grid-cols-2">{focusItems.map((item) => <div key={item} className="flex items-center gap-3 border-t border-[var(--fm-border)] py-4 text-sm text-[var(--fm-text-secondary)]"><span className="grid size-5 place-items-center rounded-full bg-[var(--fm-lime)]/15 text-[var(--fm-lime)]"><Check className="h-3 w-3" /></span>{item}</div>)}</div></div>
-          <Card variant="feature" tone="dark" className="relative flex min-h-[320px] items-end overflow-hidden p-8 sm:p-10" data-reveal><div className="absolute -right-20 -top-20 size-64 rounded-full border border-[var(--fm-lime)]/20 shadow-[0_0_0_24px_rgba(181,205,83,.03),0_0_0_48px_rgba(181,205,83,.02)]" /><div className="relative"><div className="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[var(--fm-card-muted)]">Ready to begin?</div><div className="mt-3 font-display text-3xl font-bold tracking-[-.045em]">Start with the service that matches your goal.</div><Button render={<Link href="/services" />} className="mt-7 font-bold">Explore services <ArrowUpRight className="h-4 w-4" /></Button></div></Card>
+          <Card variant="feature" tone="dark" className="relative flex min-h-[320px] items-end overflow-hidden p-8 sm:p-10" data-reveal><div className="absolute -right-20 -top-20 size-64 rounded-full border border-[var(--fm-lime)]/20 shadow-[0_0_0_24px_color-mix(in_srgb,var(--fm-lime)_3%,transparent),0_0_0_48px_color-mix(in_srgb,var(--fm-lime)_2%,transparent)]" /><div className="relative"><div className="font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[var(--fm-card-muted)]">Ready to begin?</div><div className="mt-3 font-display text-3xl font-bold tracking-[-.045em]">Start with the service that matches your goal.</div><Button render={<Link href="/services" />} className="mt-7 font-bold">Explore services <ArrowUpRight className="h-4 w-4" /></Button></div></Card>
         </div>
       </section>
     </main>

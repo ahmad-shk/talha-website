@@ -22,7 +22,7 @@
   .reveal-up.is-visible { opacity:1;transform:translateY(0); }
   .page-transition-content { animation:pageContentEnter var(--fm-motion-page-enter) var(--fm-motion-ease) both; }
   .page-transition-curtain { position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--fm-graphite-deep);pointer-events:auto;transform:translateX(0); }
-  .page-transition-curtain__mark { width:min(14vw,120px);height:3px;background:var(--fm-lime);box-shadow:0 0 24px rgba(181,205,83,.22); }
+  .page-transition-curtain__mark { width:min(14vw,120px);height:3px;background:var(--fm-lime);box-shadow:0 0 24px color-mix(in srgb,var(--fm-lime) 22%,transparent); }
   .page-transition-curtain__status { position:absolute;top:calc(50% + 24px);color:var(--fm-text-tertiary);font-family:var(--font-mono),monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase; }
   .page-transition-curtain--covering { animation:pageCurtainCover var(--fm-motion-page-cover) var(--fm-motion-page-ease) both; }
   .page-transition-curtain--revealing { animation:pageCurtainReveal var(--fm-motion-page-reveal) var(--fm-motion-ease) both;pointer-events:none; }

@@ -53,34 +53,42 @@
 }
 
 :root {
-  /* Audvertax design system — single source of truth */
-  --fm-graphite-deep: #0B0E0B;
-  --fm-graphite: #101310;
-  --fm-surface: #171B17;
-  --fm-surface-raised: #1D221C;
-  --fm-surface-high: #22281F;
-  --fm-border: #343B31;
-  --fm-border-soft: #293028;
-  --fm-border-accent: rgba(156, 83, 205, 0.4);
+  /* Foremint design system — single source of truth */
+  --fm-graphite-deep: #010101;
+  --fm-graphite: #010101;
+  --fm-surface: #010101;
+  --fm-surface-raised: #101719;
+  --fm-surface-high: #162126;
+  --fm-border: #24343B;
+  --fm-border-soft: #1A2A31;
+  --fm-border-accent: rgba(0, 119, 182, 0.45);
 
-  --fm-text-primary: #F4F2E9;
-  --fm-text-secondary: #AEB3A7;
-  --fm-text-tertiary: #7F887C;
-  --fm-text-disabled: #5E665B;
+  --fm-text-primary: #F5F8FA;
+  --fm-text-secondary: #AAB8C0;
+  --fm-text-tertiary: #74858E;
+  --fm-text-disabled: #52616A;
 
-  --fm-lime: #8853cd;
-  --fm-lime-bright: #af78dc;
-  --fm-lime-soft: rgba(160, 83, 205, 0.1);
-  --fm-lime-glow: rgba(156, 83, 205, 0.08);
+  --fm-lime: #0077B6;
+  --fm-lime-bright: #18A0E0;
+  --fm-lime-soft: rgba(0, 119, 182, 0.12);
+  --fm-lime-glow: rgba(0, 119, 182, 0.10);
 
-  --fm-success: #9FCB72;
-  --fm-success-soft: rgba(159, 203, 114, .10);
-  --fm-info: #8FB8C9;
-  --fm-info-soft: rgba(143, 184, 201, .10);
-  --fm-warning: #D1B66B;
-  --fm-warning-soft: rgba(209, 182, 107, .10);
-  --fm-danger: #D37C76;
-  --fm-danger-soft: rgba(211, 124, 118, .10);
+  /* Shared atmosphere for navigational hero sections */
+  --fm-hero-glow: rgba(0, 119, 182, 0.18);
+  --fm-hero-glow-soft: rgba(0, 119, 182, 0.08);
+  --fm-hero-glow-blur: 90px;
+  --fm-hero-grid-line: rgba(0, 119, 182, 0.055);
+  --fm-hero-grid-size: 42px;
+  --fm-hero-grid-mask: linear-gradient(to bottom, black, transparent 88%);
+
+  --fm-success: #76C893;
+  --fm-success-soft: rgba(118, 200, 147, .10);
+  --fm-info: #67B7D1;
+  --fm-info-soft: rgba(103, 183, 209, .10);
+  --fm-warning: #E2C46D;
+  --fm-warning-soft: rgba(226, 196, 109, .10);
+  --fm-danger: #E27D78;
+  --fm-danger-soft: rgba(226, 125, 120, .10);
 
   --fm-radius-sm: 10px;
   --fm-radius-md: 12px;
@@ -117,7 +125,7 @@
   --fm-type-hero-size: clamp(3rem, 6vw, 5.9rem);
   --fm-type-hero-line-height: 0.94;
 
-  --fm-focus-ring: rgba(181, 205, 83, .55);
+  --fm-focus-ring: rgba(0, 119, 182, .55);
   --fm-motion-micro: 180ms;
   --fm-motion-component: 280ms;
   --fm-motion-section: 550ms;

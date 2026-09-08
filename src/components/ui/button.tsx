@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cloneElement, isValidElement, type ButtonHTMLAttributes, type ReactElement, type ReactNode } from 'react'
+import { cloneElement, isValidElement, type ButtonHTMLAttributes, type ReactElement } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -31,26 +31,33 @@ const buttonVariants = cva(
   },
 )
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & VariantProps<typeof buttonVariants> & {
-  asChild?: boolean
-  render?: ReactElement
-}
-type ButtonChildProps = { className?: string; children?: ReactNode }
-
-function Button({ className, variant = 'default', size = 'default', asChild, render, children, ...props }: ButtonProps) {
-  const buttonClassName = cn(buttonVariants({ variant, size, className }))
-  const child = render ?? (asChild && isValidElement(children) ? children : null)
-
-  if (child) {
-    const childProps = child.props as ButtonChildProps
-    return cloneElement(child, {
-      ...props,
-      className: cn(buttonClassName, childProps.className),
-      children: render ? children : childProps.children,
-    } as ButtonChildProps)
+type ButtonRender = ReactElement<any>
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants> & {
+    render?: ButtonRender
+    asChild?: boolean
   }
 
-  return <button data-slot="button" className={buttonClassName} {...props}>{children as ReactNode}</button>
+function Button({ className, variant = 'default', size = 'default', render, asChild = false, children, ...props }: ButtonProps) {
+  const classes = cn(buttonVariants({ variant, size, className }))
+
+  if (render) {
+    return cloneElement(render, {
+      ...props,
+      className: cn(render.props.className, classes),
+      children,
+    })
+  }
+
+  if (asChild && isValidElement(children)) {
+    const child = children as ButtonRender
+    return cloneElement(child, {
+      ...props,
+      className: cn(child.props.className, classes),
+    })
+  }
+
+  return <button data-slot="button" className={classes} {...props}>{children}</button>
 }
 
 export { Button, buttonVariants }

@@ -13,7 +13,7 @@ export default function Contact() {
   const [sent, setSent] = useState(false);
   return (
     <main className="min-h-screen bg-[var(--fm-graphite-deep)] text-[var(--fm-text-primary)]">
-      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_right,rgba(181,205,83,.12),transparent_30%),var(--fm-graphite-deep)]">
+      <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--fm-lime)_12%,transparent),transparent_30%),var(--fm-graphite-deep)]">
         <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 pb-16 pt-28 md:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:pb-24 lg:pt-32">
           <div className="relative z-10">
             <SectionLabel>Contact</SectionLabel>

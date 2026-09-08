@@ -1,41 +1,34 @@
-import { Card, CardAction } from "@/components/ui/design-system";
-
-const STANDARD_FEATURES = ["LLC formation in any state", "Business Tax ID (EIN)", "Registered agent, 1st year", "Articles of Incorporation", "One Business Account Setup", "Audvertax dashboard access"];
-const ADVANCED_FEATURES = ["Everything in Standard", "U.S. business bank account setup", "Payment gateway approval support", "Unique Business Address", "USA Phone Number - 3 Months", "Compliance calendar & renewal filing", "Priority WhatsApp support"];
-const CUSTOM_FEATURES = ["Multi-member & holding structures", "ITIN application support", "Bookkeeping & tax filing referrals", "Dedicated account manager"];
-
-const pricingCards = [
-  { name: "Standard", price: "$119", subtitle: "Everything to make your LLC real.", features: STANDARD_FEATURES, variant: "feature" as const, featured: false, cta: "Choose Standard", href: "/get-started", tone: "dark" as const },
-  { name: "Advanced", price: "$179", subtitle: "Formation plus the payment rails.", features: ADVANCED_FEATURES, variant: "elevated" as const, featured: true, cta: "Choose Advanced", href: "/get-started", tone: "lime" as const },
-  { name: "Custom", price: "Let's talk", subtitle: "For teams and complex structures.", features: CUSTOM_FEATURES, variant: "feature" as const, featured: false, cta: "Talk to us", href: "https://calendly.com/foremint-pk/lets-have-a-consultation-call", tone: "dark" as const },
-];
+import Link from "next/link";
+import { ArrowRight, MapPin } from "@phosphor-icons/react/dist/ssr";
+import { Card } from "@/components/ui/design-system";
+import { getMarketHref, markets } from "@/lib/markets";
 
 export default function PricingSection() {
   return (
-    <div id="services" aria-labelledby="services-heading" className="relative isolate overflow-hidden bg-[var(--fm-graphite-deep)] py-24 text-[var(--fm-text-primary)]">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_45%_at_50%_0%,rgba(181,205,83,.08),transparent_65%)]" />
-      <div className="relative z-[1] mx-auto mb-16 max-w-2xl px-6 text-center">
-        <span className="mb-[18px] inline-block font-mono text-fm-label font-bold uppercase tracking-fm-label text-[var(--fm-lime)]">Services</span>
-        <h2 id="services-heading" className="mb-[18px] font-display text-fm-section font-extrabold tracking-fm-section text-[var(--fm-text-primary)]">
-          Everything between you and your <span className="text-[var(--fm-lime)]">first U.S. payment.</span>
-        </h2>
-      </div>
-      <div id="pricing" className="relative z-[1] mx-auto grid max-w-[1160px] grid-cols-1 items-stretch gap-6 px-6 lg:grid-cols-[1fr_1.06fr_1fr] lg:px-8">
-        {pricingCards.map((card) => {
-          const priceSize = card.name === "Custom" ? "text-[clamp(38px,4vw,52px)]" : "text-[clamp(48px,5.5vw,68px)]";
-          return (
-            <Card key={card.name} variant={card.variant} tone={card.tone} className="relative flex flex-col overflow-hidden p-9 pb-8">
-              {card.featured && <span className="absolute right-5 top-5 rounded-[var(--fm-radius-pill)] border border-[var(--fm-lime)]/40 bg-[var(--fm-lime-soft)] px-3 py-[5px] font-mono text-[9.5px] font-bold uppercase tracking-[0.12em] text-[var(--fm-lime)]">Most Popular</span>}
-              <span className="mb-3.5 block font-mono text-[10.5px] font-semibold uppercase tracking-[0.14em] text-(--fm-card-text)">{card.name}</span>
-              <div className="mb-1.5 flex items-baseline gap-1.5"><span className={`font-display font-extrabold leading-none tracking-[-0.04em] text-(--fm-card-text) ${priceSize}`}>{card.price}</span>{card.name !== "Custom" && <span className="text-sm font-medium text-(--fm-card-muted)">+ state fee</span>}</div>
-              <p className="mb-6 text-[14.5px] font-medium leading-relaxed text-(--fm-card-muted)">{card.subtitle}</p>
-              <div className="mb-[22px] h-px bg-(--fm-card-divider)" />
-              <ul className="mb-8 flex flex-1 flex-col gap-[11px]">{card.features.map((feature) => <li key={feature} className="flex items-start gap-2.5 text-sm font-semibold leading-snug text-(--fm-card-text)"><span className="flex-shrink-0 text-[15px] font-bold leading-snug text-(--fm-card-muted)">●</span>{feature}</li>)}</ul>
-              <CardAction href={card.href} target={card.href.startsWith("http") ? "_blank" : undefined} rel={card.href.startsWith("http") ? "noopener noreferrer" : undefined}>{card.cta}</CardAction>
+    <section id="services" aria-labelledby="services-heading" className="relative isolate overflow-hidden bg-[var(--fm-graphite-deep)] px-6 py-24 text-[var(--fm-text-primary)] sm:px-8 lg:py-28">
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_45%_at_50%_0%,color-mix(in_srgb,var(--fm-lime)_8%,transparent),transparent_65%)]" />
+      <div className="relative z-[1] mx-auto max-w-[1400px]">
+        <div className="mb-12 max-w-[760px]">
+          <span className="mb-[18px] inline-block font-mono text-fm-label font-bold uppercase tracking-fm-label text-[var(--fm-lime)]">Choose a market</span>
+          <h2 id="services-heading" className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Pricing is organized by where your business is being built.</h2>
+          <p className="mt-4 text-fm-body text-[var(--fm-text-secondary)]">Explore the services available in each market, then choose the service that fits your business.</p>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {markets.map((market, index) => (
+            <Card key={market.slug} variant="interactive" tone="dark" className="group flex min-h-[280px] flex-col justify-between p-7">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="grid h-11 w-11 place-items-center rounded-full border border-[var(--fm-lime)]/25 bg-[var(--fm-lime)]/10 text-[var(--fm-lime)]"><MapPin className="h-5 w-5" /></span>
+                  <span className="font-mono text-[10px] font-bold tracking-[.14em] text-[var(--fm-text-tertiary)]">{String(index + 1).padStart(2, "0")}</span>
+                </div>
+                <h3 className="mt-8 font-display text-3xl font-extrabold tracking-[-.045em] text-[var(--fm-card-text)]">{market.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-[var(--fm-card-muted)]">{market.description}</p>
+              </div>
+              <Link href={getMarketHref(market.slug)} className="mt-8 inline-flex items-center justify-between rounded-[var(--fm-radius-pill)] bg-[var(--fm-lime)] px-5 py-3.5 text-sm font-bold text-[var(--fm-graphite-deep)] transition-transform duration-[var(--fm-motion-component)] hover:-translate-y-px hover:bg-[var(--fm-lime-bright)]">Explore <ArrowRight weight="bold" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></Link>
             </Card>
-          );
-        })}
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

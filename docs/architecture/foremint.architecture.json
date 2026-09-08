@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Foremint Application Architecture",
+    "output": "foremint-architecture.html",
+    "quality_profile": "showcase",
+    "visual_preset": "signal-flow",
+    "views": [
+      {
+        "id": "public-experience",
+        "label": "Public website",
+        "focus": ["browser", "next-app", "site-chrome", "home", "service-pages", "pricing", "content"] ,
+        "note": "Public-facing Next.js routes and shared presentation components."
+      },
+      {
+        "id": "application-flow",
+        "label": "Application and checkout",
+        "focus": ["browser", "next-app", "application-ui", "application-state", "service-catalog", "pricing-engine", "api"],
+        "note": "Customer application data flows from the browser through the frontend API client to the backend API."
+      },
+      {
+        "id": "authenticated-dashboard",
+        "label": "Authenticated customer area",
+        "focus": ["browser", "next-app", "auth", "dashboard", "application-state", "documents", "billing", "api"],
+        "note": "Protected dashboard routes depend on authentication and application state."
+      }
+    ]
+  },
+  "components": [
+    { "id": "browser", "type": "external", "label": "Customer Browser", "sublabel": "Web client", "pos": [40, 330], "size": [140, 64] },
+    { "id": "next-app", "type": "frontend", "label": "Next.js App", "sublabel": "App Router + React 19", "pos": [250, 330], "size": [150, 64], "tag": "Next.js 16" },
+    { "id": "site-chrome", "type": "frontend", "label": "Site Chrome", "sublabel": "Nav / global UI", "pos": [470, 100], "size": [150, 64] },
+    { "id": "home", "type": "frontend", "label": "Homepage", "sublabel": "Marketing sections", "pos": [680, 100], "size": [150, 64] },
+    { "id": "service-pages", "type": "frontend", "label": "Service Pages", "sublabel": "USA LLC / UK LTD / EIN", "pos": [890, 100], "size": [170, 64] },
+    { "id": "pricing", "type": "frontend", "label": "Pricing Explorer", "sublabel": "Country / state pricing", "pos": [680, 210], "size": [160, 64] },
+    { "id": "content", "type": "database", "label": "Local Content Catalogs", "sublabel": "Services / documents / states", "pos": [890, 210], "size": [170, 64] },
+    { "id": "application-ui", "type": "frontend", "label": "Application UI", "sublabel": "Forms / application shell", "pos": [470, 430], "size": [160, 64] },
+    { "id": "application-state", "type": "backend", "label": "Application State", "sublabel": "React context / API state", "pos": [680, 430], "size": [170, 64] },
+    { "id": "auth", "type": "security", "label": "Auth Layer", "sublabel": "Login / Google / guards", "pos": [470, 560], "size": [160, 64] },
+    { "id": "dashboard", "type": "backend", "label": "Customer Dashboard", "sublabel": "Applications / billing / documents", "pos": [680, 560], "size": [180, 64] },
+    { "id": "documents", "type": "database", "label": "Document Operations", "sublabel": "Upload / download / status", "pos": [900, 430], "size": [170, 64] },
+    { "id": "billing", "type": "cloud", "label": "Billing Flow", "sublabel": "Orders / payment status", "pos": [900, 560], "size": [170, 64] },
+    { "id": "service-catalog", "type": "backend", "label": "Service Domain", "sublabel": "Catalog / selection / config", "pos": [1120, 210], "size": [180, 64] },
+    { "id": "pricing-engine", "type": "backend", "label": "Pricing Engine", "sublabel": "Application pricing", "pos": [1120, 430], "size": [180, 64] },
+    { "id": "api", "type": "cloud", "label": "Backend API", "sublabel": "NEXT_PUBLIC_API_URL", "pos": [1120, 560], "size": [180, 64], "tag": "/api/v1" }
+  ],
+  "boundaries": [
+    { "kind": "application", "label": "Foremint Next.js frontend", "wraps": ["next-app", "site-chrome", "home", "service-pages", "pricing", "content", "application-ui", "application-state", "auth", "dashboard", "documents", "billing", "service-catalog", "pricing-engine"] },
+    { "kind": "external-service", "label": "External backend boundary", "wraps": ["api"] }
+  ],
+  "connections": [
+    { "id": "browser-next", "from": "browser", "to": "next-app", "label": "HTTPS", "variant": "emphasis" },
+    { "id": "next-chrome", "from": "next-app", "to": "site-chrome" },
+    { "id": "next-home", "from": "next-app", "to": "home" },
+    { "id": "next-services", "from": "next-app", "to": "service-pages" },
+    { "id": "next-pricing", "from": "next-app", "to": "pricing" },
+    { "id": "pricing-content", "from": "pricing", "to": "content", "label": "state / country data" },
+    { "id": "services-domain", "from": "service-pages", "to": "service-catalog", "label": "service selection", "variant": "dashed" },
+    { "id": "application-ui-state", "from": "application-ui", "to": "application-state", "label": "application state" },
+    { "id": "state-api", "from": "application-state", "to": "api", "label": "REST", "variant": "emphasis" },
+    { "id": "auth-api", "from": "auth", "to": "api", "label": "auth / session", "variant": "security" },
+    { "id": "dashboard-state", "from": "dashboard", "to": "application-state", "label": "application data" },
+    { "id": "dashboard-api", "from": "dashboard", "to": "api", "label": "REST", "variant": "emphasis" },
+    { "id": "dashboard-documents", "from": "dashboard", "to": "documents", "label": "upload / download", "variant": "dashed" },
+    { "id": "dashboard-billing", "from": "dashboard", "to": "billing", "label": "billing order / payment", "variant": "dashed" },
+    { "id": "service-pricing", "from": "service-catalog", "to": "pricing-engine", "label": "service/package pricing" },
+    { "id": "pricing-application", "from": "pricing-engine", "to": "application-state", "label": "calculated pricing", "variant": "dashed" },
+    { "id": "api-documents", "from": "api", "to": "documents", "label": "document endpoints", "variant": "dashed" },
+    { "id": "api-billing", "from": "api", "to": "billing", "label": "billing endpoints", "variant": "dashed" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Frontend", "items": ["Next.js App Router with React 19 and TypeScript", "Marketing, service, pricing, checkout and dashboard routes", "Shared navigation and global UI wrap the public experience"] },
+    { "dot": "emerald", "title": "Domain logic", "items": ["Service catalog combines commercial catalog, application selection, configuration and state data", "Application state provider coordinates application data and mutations", "Pricing logic calculates application-specific totals"] },
+    { "dot": "rose", "title": "Backend boundary", "items": ["src/lib/api.ts targets NEXT_PUBLIC_API_URL with cookie credentials", "Auth, applications, documents and billing use /api/v1 endpoints", "The repository contains frontend API contracts; backend implementation is outside this map"] }
+  ]
+}

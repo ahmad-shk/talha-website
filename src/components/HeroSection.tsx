@@ -42,12 +42,12 @@ export default function HeroSection() {
         <div className="hero-section__copy">
           <div data-hero-eyebrow className="hero-section__eyebrow"><span className="hero-section__eyebrow-dot" />Pakistan → Global Business Infrastructure</div>
           <h1 className="hero-section__title">
-            <span className="hero-section__title-line"><span data-hero-line>Build the company.</span></span>
-            <span className="hero-section__title-line"><span data-hero-line>Open the rails.</span></span>
-            <span className="hero-section__title-line"><span data-hero-line className="hero-section__title-accent">Get paid globally.</span></span>
+            <span className="hero-section__title-line"><span data-hero-line>Build Globally.</span></span>
+            <span className="hero-section__title-line"><span data-hero-line>Comply seamlessly.</span></span>
+            <span className="hero-section__title-line"><span data-hero-line className="hero-section__title-accent">Scales without borders.</span></span>
           </h1>
-          <p data-hero-copy className="hero-section__description">We handle your <b>U.S. LLC</b>, <b>UK Ltd</b>, <b>ITIN</b> and taxation, then connect the payment infrastructure you need to collect from clients worldwide.</p>
-          <div data-hero-actions className="hero-section__actions"><Link href="/get-started" className="hero-section__primary-action">Get Started<ArrowUpRight weight="bold" className="hero-section__primary-icon" /></Link><a href="#vsl" className="hero-section__secondary-action">See how it works<span>02:18</span></a></div>
+          <p data-hero-copy className="hero-section__description">We handle your <b>Company formation</b>, <b>Taxation</b> & <b>Compliances</b> in USA, UK, UAE and Pakistan.<br/>Global business setup & tax compliance, solve end to end</p>
+          {/* <div data-hero-actions className="hero-section__actions"><Link href="/get-started" className="hero-section__primary-action">Get Started<ArrowUpRight weight="bold" className="hero-section__primary-icon" /></Link><a href="#vsl" className="hero-section__secondary-action">See how it works<span>02:18</span></a></div> */}
         </div>
 
         <div data-hero-visual className="hero-section__visual">

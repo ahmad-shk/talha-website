@@ -3,6 +3,7 @@
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ApplicationShell from "@/components/application/ApplicationShell";
+import ApplicationSelectionRecovery from "@/components/application/ApplicationSelectionRecovery";
 import { useApplicationState } from "@/components/application/ApplicationStateProvider";
 import { getApplicationConfig, getServiceBySlug } from "@/lib/services";
 import { LoadingState } from "@/components/ui/interaction-controls";
@@ -58,6 +59,14 @@ export default function GenericApplicationPage() {
     notFound();
   }
 
+  const needsPackage = Boolean(service.capabilities.requiresPackage && !application.packageSlug);
+  const needsJurisdiction = Boolean(service.capabilities.requiresJurisdiction && !application.formationState);
+  const needsVariant = Boolean(service.variants?.length && !application.variantSlug);
+
+  if (needsPackage || needsJurisdiction || needsVariant) {
+    return <ApplicationSelectionRecovery application={application} service={service} />;
+  }
+
   return (
     <ApplicationShell
       config={config}
@@ -65,6 +74,9 @@ export default function GenericApplicationPage() {
       applicationId={application.id}
       initialAnswers={application.answers}
       initialStep={application.currentStep}
+      packageSlug={application.packageSlug}
+      formationState={application.formationState}
+      variantSlug={application.variantSlug}
     />
   );
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { CheckCircle2, FileText } from "lucide-react";
 import { useApplicationState, type ApplicationState } from "@/components/application/ApplicationStateProvider";
-import { getServiceBySlug } from "@/lib/services";
+import { getApplicationConfig, getServiceBySlug } from "@/lib/services";
 import { StatusBadge } from "@/components/ui/design-system";
 import { ApplicationCard } from "@/components/ui/composite";
 import { EmptyState, SectionHeader } from "@/components/ui/interaction-controls";
@@ -12,8 +12,12 @@ import { buttonVariants } from "@/components/ui/button";
 function getProgress(application: ApplicationState) {
   if (["paid", "processing", "completed"].includes(application.status)) return 100;
   if (["in_review", "ready_for_payment"].includes(application.status)) return 90;
-  const step = Math.max(application.currentStep, 0);
-  return Math.min(Math.max(Math.round((step / 5) * 100), 0), 100);
+
+  const stepCount = getApplicationConfig(application.serviceSlug)?.steps.length ?? 0;
+  if (stepCount <= 0) return 0;
+
+  const step = Math.min(Math.max(application.currentStep, 0), stepCount - 1);
+  return Math.min(Math.max(Math.round(((step + 1) / stepCount) * 100), 0), 100);
 }
 
 function getStatusTone(status: ApplicationState["status"]): "success" | "info" | "warning" | "danger" | "neutral" {

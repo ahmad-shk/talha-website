@@ -9,12 +9,12 @@ type CardData = {
 };
 
 const CARDS: CardData[] = [
-  { title: "Stripe & PayPal Won't Work Here", quote: "“Stripe and PayPal don't work for me here.”", solution: "We activate Stripe, PayPal, Payoneer, Wise & Zelle under your U.S. entity, built for non-residents from day one.", rotate: -3 },
-  { title: "Bank Application Rejected", quote: "“My bank application got rejected and they wouldn't say why.”", solution: "We document your business model the way underwriters want it. As Pakistan's only official Sunrate & Airwallex partner, we know what gets approved.", rotate: 2 },
-  { title: "Can't Send a Real Invoice", quote: "“I lose deals because I can't send a real invoice.”", solution: "A real U.S. LLC, EIN, and business bank account, so you invoice clients as a registered entity, not a freelancer.", rotate: -2 },
-  { title: "No SSN, No Way In", quote: "“I don't have an SSN, every guide assumes I do.”", solution: "No SSN, no ITIN, no U.S. trip required. We file your EIN directly with the IRS, and handle ITIN only if you truly need it.", rotate: 3 },
-  { title: "It Could All Disappear", quote: "“Everything I set up could just disappear.”", solution: "Compliance & renewals tracking, plus a dashboard that flags every deadline before the state or IRS does, closing the gaps that trigger reviews.", rotate: -3 },
-  { title: "Too Many Agents to Trust", quote: "“I'm juggling five different agents and trust none of them.”", solution: "One dashboard, LLC, EIN, documents, payments, renewals, with a real human on WhatsApp support, not a black box.", rotate: 2 },
+  { title: "USA", quote: "MISSING DEADLINES FEARS, FEARING IRS PENALTIES", solution: "AudVertax providing complete US corporate and non-resident filing. We handle IRS returns and state annual reports.", rotate: -3 },
+  { title: "United Kingdom (HMRC)", quote: "Stuck on HMRC & Identity Verification", solution: "AudVertax providing end-to-end UK tax returns, Corporation Tax (CT600), VAT filings, and confirmation statements tailored for global directors and non-resident founders.", rotate: 2 },
+  { title: "United Arab Emirates (FTA)", quote: "Confused by UAE Corporate Tax & VAT Thresholds", solution: "FTA-compliant Corporate Tax filing, registration, and VAT management for Free Zone and Mainland entities, keeping your offshore or onshore operations fully shielded.", rotate: -2 },
+  { title: "Pakistan (FBR)", quote: "FBR Compliance & Cross-Border Remittances", solution: "Precision FBR income tax returns, ATL restoration, and foreign source income documentation, ensuring seamless profit repatriation and zero tax audit friction.", rotate: 3 },
+  { title: "MULTI JURISDICTION", quote: "Drowning in Double Taxation Risks", solution: "Strategic international tax structuring and treaty relief application. We align your US, UK, UAE, and Pakistan filings to legally minimize global tax liabilities.", rotate: -3 },
+  { title: "Fragmented Advisory", quote: "Too Many Local Tax Agents to Manage", solution: "One unified tax partner. Access direct WhatsApp communication, single-point account management, and standardized global tax filing across all your active jurisdictions.", rotate: 2 },
 ];
 
 export default function ProblemsSolutions() {
@@ -38,7 +38,7 @@ export default function ProblemsSolutions() {
       </div>
       <div className="relative z-[2] mt-16 flex items-center gap-3">
         <Image src="/avatar_abd.svg" alt="Audvertax founder" width={46} height={46} className="h-[46px] w-[46px] rounded-full border-2 border-[var(--fm-border)] object-cover shadow-[var(--fm-shadow-subtle)]" />
-        <p className="text-left font-sans text-[15px] leading-snug text-[var(--fm-text-secondary)]">Your <span className="text-[21px] font-bold text-[var(--fm-lime)]" style={{ fontFamily: "var(--font-caveat), cursive" }}>all-in-one</span><br />U.S. setup partner.</p>
+        <p className="text-left font-sans text-[15px] leading-snug text-[var(--fm-text-secondary)]"><span className="text-[21px] font-bold text-[var(--fm-lime)]" style={{ fontFamily: "var(--font-caveat), cursive" }}>US to Global</span><br />U.S. setup partner.</p>
       </div>
     </section>
   );

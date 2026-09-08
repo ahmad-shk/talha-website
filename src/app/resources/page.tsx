@@ -12,8 +12,8 @@ const resources = [
 export default function ResourcesPage() {
   return (
     <main className="fm-page overflow-hidden">
-      <section className="relative isolate border-b border-[var(--fm-border)] bg-[radial-gradient(circle_at_78%_18%,rgba(181,205,83,.14),transparent_28%),linear-gradient(135deg,var(--fm-graphite-deep)_0%,var(--fm-surface)_100%)] px-5 pb-20 pt-24 sm:px-8 sm:pb-24 sm:pt-28 lg:pb-28 lg:pt-32">
-        <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(181,205,83,.045)_1px,transparent_1px),linear-gradient(90deg,rgba(181,205,83,.045)_1px,transparent_1px)] [background-size:42px_42px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" />
+      <section className="relative isolate border-b border-[var(--fm-border)] bg-[radial-gradient(circle_at_78%_18%,var(--fm-hero-glow),transparent_28%),linear-gradient(135deg,var(--fm-graphite-deep)_0%,var(--fm-surface)_100%)] px-5 pb-20 pt-24 sm:px-8 sm:pb-24 sm:pt-28 lg:pb-28 lg:pt-32">
+        <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(var(--fm-hero-grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--fm-hero-grid-line)_1px,transparent_1px)] [background-size:var(--fm-hero-grid-size)_var(--fm-hero-grid-size)] [mask-image:var(--fm-hero-grid-mask)]" />
         <div className="relative mx-auto grid max-w-[1400px] items-end gap-10 lg:grid-cols-[1.15fr_.85fr] lg:gap-20">
           <div className="max-w-[900px]">
             <SectionLabel>Resources</SectionLabel>

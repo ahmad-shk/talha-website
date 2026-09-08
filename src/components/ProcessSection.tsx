@@ -10,7 +10,7 @@ const STEPS = [
 export default function ProcessSection() {
   return (
     <section id="process" aria-labelledby="process-heading" className="relative isolate overflow-hidden bg-[var(--fm-graphite)] px-5 py-[clamp(80px,10vh,120px)] sm:px-8 lg:px-12">
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_45%_at_50%_100%,rgba(181,205,83,.05),transparent_65%),radial-gradient(40%_40%_at_10%_30%,rgba(181,205,83,.035),transparent_65%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_45%_at_50%_100%,color-mix(in_srgb,var(--fm-lime)_5%,transparent),transparent_65%),radial-gradient(40%_40%_at_10%_30%,color-mix(in_srgb,var(--fm-lime)_3.5%,transparent),transparent_65%)]" />
       <div className="relative z-[1] mx-auto max-w-[1200px]">
         <h2 id="process-heading" className="font-display text-fm-section font-extrabold tracking-[-.05em] text-[var(--fm-text-primary)]">How Audvertax works</h2>
         <div className="mt-12 grid grid-cols-1 gap-fm-5 sm:grid-cols-2 lg:grid-cols-4">
