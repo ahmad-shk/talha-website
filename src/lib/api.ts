@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://audevertax-back-end.vercel.app/";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://audevertax-back-end.vercel.app";
 export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> { const response = await fetch(`${API_URL}${path}`, { ...options, credentials: "include", headers: { "Content-Type": "application/json", ...(options.headers ?? {}) } }); const data = await response.json().catch(() => null); if (!response.ok) throw new Error(data?.error?.message ?? "Something went wrong. Please try again."); return data as T; }
 export type AuthUser = { id: string; email: string; firstName: string; lastName: string; role: "customer" | "admin" | "staff"; createdAt?: string; updatedAt?: string };
 export type ApplicationStatus = "draft" | "in_review" | "ready_for_payment" | "paid" | "processing" | "completed" | "cancelled";
