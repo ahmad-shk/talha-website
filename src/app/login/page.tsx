@@ -8,6 +8,7 @@ import { ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { login, loginWithGoogle } from "@/lib/api";
 import GuestGuard from "@/components/auth/GuestGuard";
 import { useAuth } from "@/components/auth/AuthProvider";
+import EmailVerificationModal from "@/components/auth/EmailVerificationModal";
 import { Card, SectionLabel } from "@/components/ui/design-system";
 
 type GoogleCredentialResponse = { credential: string };
@@ -30,6 +31,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(true);
   const [googleReady, setGoogleReady] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
 
   async function continueAfterAuth() {
     const raw = window.sessionStorage.getItem(pendingKey);
@@ -61,11 +63,20 @@ function LoginForm() {
       setAuthenticatedUser(response.data.user);
       await continueAfterAuth();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to sign in.");
+      const message = err instanceof Error ? err.message : "Unable to sign in.";
+      setError(message);
+      if (message.toLowerCase().includes("verify your email") || message.toLowerCase().includes("email_not_verified") || message.toLowerCase().includes("email not verified")) {
+        setVerificationEmail(email);
+      }
     } finally {
       setLoading(false);
     }
   }
+
+  const handleVerified = async () => {
+    setVerificationEmail(null);
+    await continueAfterAuth();
+  };
 
   useEffect(() => {
     const google = (window as GoogleWindow).google;
@@ -100,6 +111,7 @@ function LoginForm() {
   ];
 
   return <>
+    <EmailVerificationModal email={verificationEmail} open={Boolean(verificationEmail)} onVerified={handleVerified} />
     <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" onLoad={() => setGoogleReady(true)} />
     <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[var(--fm-graphite-deep)] px-5 py-16 text-[var(--fm-text-primary)] sm:px-8 lg:py-24">
       <Card variant="feature" tone="dark" className="relative mx-auto grid w-full max-w-5xl overflow-hidden lg:grid-cols-[.88fr_1.12fr]">

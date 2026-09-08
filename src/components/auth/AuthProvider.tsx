@@ -25,6 +25,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const setAuthenticatedUser = (nextUser: AuthUser) => {
     ++requestId.current;
+    if (nextUser.emailVerified === false) {
+      setUser(null);
+      setLoading(false);
+      clearUserScopedStorage();
+      return;
+    }
+
     setUser((currentUser) => {
       if (currentUser && currentUser.email !== nextUser.email) clearUserScopedStorage();
       return nextUser;
@@ -39,6 +46,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       const response = await getCurrentUser();
       const nextUser = response.data.user;
       if (id !== requestId.current) return;
+
+      if (nextUser.emailVerified === false) {
+        setUser(null);
+        clearUserScopedStorage();
+        setLoading(false);
+        return;
+      }
 
       setUser((currentUser) => {
         const changedAccount = currentUser && nextUser && currentUser.email !== nextUser.email;
@@ -61,7 +75,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     getCurrentUser()
       .then((response) => {
         if (id !== requestId.current) return;
-        setUser(response.data.user);
+        const nextUser = response.data.user;
+        if (nextUser.emailVerified === false) {
+          setUser(null);
+          clearUserScopedStorage();
+          return;
+        }
+        setUser(nextUser);
       })
       .catch(() => {
         if (id === requestId.current) setUser(null);
