@@ -17,13 +17,7 @@ function VerifyEmailContent() {
   useEffect(() => {
     if (!token) {
       setStatus("missing-token");
-      setMessage("This verification link is missing the token.");
-      return;
-    }
-
-    if (!email) {
-      setStatus("missing-email");
-      setMessage("This verification link is incomplete. Please request a new verification email from the app.");
+      setMessage("This verification link is missing the token. Please request a new verification email from the app.");
       return;
     }
 
@@ -35,7 +29,7 @@ function VerifyEmailContent() {
       })
       .catch((error: unknown) => {
         setStatus("error");
-        setMessage(error instanceof Error ? error.message : "This verification link is invalid or expired.");
+        setMessage(error instanceof Error ? error.message : "This verification link is invalid or expired. Please request a new verification email from the app.");
       });
   }, [email, router, token]);
 

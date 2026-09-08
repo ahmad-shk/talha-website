@@ -11,7 +11,12 @@ type AuthResponse = { success: true; data: { user: AuthUser } & Record<string, u
 export async function login(email: string, password: string) { return apiRequest<AuthResponse>("/api/v1/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }); }
 export async function loginWithGoogle(credential: string) { return apiRequest<AuthResponse>("/api/v1/auth/google", { method: "POST", body: JSON.stringify({ credential }) }); }
 export async function register(input: { email: string; password: string; firstName: string; lastName: string }) { return apiRequest<AuthResponse>("/api/v1/auth/register", { method: "POST", body: JSON.stringify(input) }); }
-export async function verifyEmail(email: string, token: string) { return apiRequest<AuthResponse>("/api/v1/auth/verify-email", { method: "POST", body: JSON.stringify({ email, token }) }); }
+export async function verifyEmail(email: string | null, token: string) {
+  return apiRequest<AuthResponse>("/api/v1/auth/verify-email", {
+    method: "POST",
+    body: JSON.stringify({ ...(email ? { email } : {}), token }),
+  });
+}
 export async function resendVerification(email: string) { return apiRequest<AuthResponse>("/api/v1/auth/resend-verification", { method: "POST", body: JSON.stringify({ email }) }); }
 export async function getCurrentUser() { return apiRequest<AuthResponse>("/api/v1/auth/me"); } export async function getMyUser() { return apiRequest<AuthResponse>("/api/v1/users/me"); } export async function logout() { return apiRequest<{ success: true; data: { message: string } }>("/api/v1/auth/logout", { method: "POST" }); }
 export async function createApplication(input: { serviceSlug: string; packageSlug?: string; formationState?: string; variantSlug?: string; addOnSlugs?: string[]; members?: ApplicationMember[]; documents?: ApplicationDocumentReference[]; currentStep?: number; answers?: Record<string, unknown> }) { return apiRequest<ApplicationResponse>("/api/v1/applications", { method: "POST", body: JSON.stringify(input) }); }
