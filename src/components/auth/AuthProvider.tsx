@@ -12,10 +12,51 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const AUTH_STORAGE_KEY = "audvertax.auth.session";
+
+type PersistedAuthSession = {
+  user: AuthUser | null;
+  token?: string | null;
+  updatedAt?: number;
+};
+
+function readPersistedAuthSession(): PersistedAuthSession | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = window.localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as PersistedAuthSession;
+    if (!parsed?.user) return null;
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistAuthSession(nextUser: AuthUser | null, token?: string | null) {
+  if (typeof window === "undefined") return;
+
+  const session: PersistedAuthSession = {
+    user: nextUser,
+    token: token ?? readPersistedAuthSession()?.token ?? null,
+    updatedAt: Date.now(),
+  };
+
+  if (!nextUser || nextUser.emailVerified === false) {
+    window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    return;
+  }
+
+  window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+}
 
 function clearUserScopedStorage() {
   window.localStorage.removeItem("audvertax.settings");
   window.localStorage.removeItem("audvertax.application");
+  window.localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
@@ -36,6 +77,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       if (currentUser && currentUser.email !== nextUser.email) clearUserScopedStorage();
       return nextUser;
     });
+    persistAuthSession(nextUser, null);
     setLoading(false);
   };
 
@@ -59,10 +101,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         if (changedAccount) clearUserScopedStorage();
         return nextUser;
       });
+      persistAuthSession(nextUser, null);
       setLoading(false);
     } catch {
       if (id === requestId.current) {
         setUser(null);
+        clearUserScopedStorage();
         setLoading(false);
       }
     }
@@ -71,6 +115,11 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const id = requestId.current + 1;
     requestId.current = id;
+
+    const persisted = readPersistedAuthSession();
+    if (persisted?.user && persisted.user.emailVerified !== false) {
+      setUser(persisted.user);
+    }
 
     getCurrentUser()
       .then((response) => {
@@ -82,9 +131,18 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
         setUser(nextUser);
+        persistAuthSession(nextUser, null);
       })
       .catch(() => {
-        if (id === requestId.current) setUser(null);
+        if (id === requestId.current) {
+          const storedUser = readPersistedAuthSession()?.user;
+          if (storedUser && storedUser.emailVerified !== false) {
+            setUser(storedUser);
+          } else {
+            setUser(null);
+            clearUserScopedStorage();
+          }
+        }
       })
       .finally(() => {
         if (id === requestId.current) setLoading(false);
