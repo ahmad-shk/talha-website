@@ -24,6 +24,28 @@ export async function updatePassword(input: { currentPassword?: string; newPassw
 export async function getCurrentUser() { return apiRequest<AuthResponse>("/api/v1/auth/me"); } export async function getMyUser() { return apiRequest<AuthResponse>("/api/v1/users/me"); } export async function logout() { return apiRequest<{ success: true; data: { message: string } }>("/api/v1/auth/logout", { method: "POST" }); }
 export async function createApplication(input: { serviceSlug: string; packageSlug?: string; formationState?: string; variantSlug?: string; addOnSlugs?: string[]; members?: ApplicationMember[]; documents?: ApplicationDocumentReference[]; currentStep?: number; answers?: Record<string, unknown> }) { return apiRequest<ApplicationResponse>("/api/v1/applications", { method: "POST", body: JSON.stringify(input) }); }
 export async function getApplications() { return apiRequest<ApplicationsResponse>("/api/v1/applications"); } export async function getApplication(id: string) { return apiRequest<ApplicationResponse>(`/api/v1/applications/${encodeURIComponent(id)}`); } export async function updateApplication(id: string, input: Partial<Omit<Application, "id" | "userId" | "serviceSlug" | "createdAt" | "updatedAt">>) { return apiRequest<ApplicationResponse>(`/api/v1/applications/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(input) }); } export async function deleteApplication(id: string) { return apiRequest<void>(`/api/v1/applications/${encodeURIComponent(id)}`, { method: "DELETE" }); }
-export async function uploadApplicationDocument(applicationId: string, input: { file: File; documentType: string; ownerType?: "application" | "member"; ownerId?: string }) { const response = await fetch(`${API_URL}/api/v1/applications/${encodeURIComponent(applicationId)}/documents`, { method: "POST", credentials: "include", headers: { "Content-Type": input.file.type, "X-Document-Type": input.documentType, "X-Document-Owner-Type": input.ownerType ?? "application", ...(input.ownerId ? { "X-Document-Owner-Id": input.ownerId } : {}), "X-File-Name": input.file.name }, body: input.file }); const data = await response.json().catch(() => null); if (!response.ok) throw new Error(data?.error?.message ?? "Document upload failed. Please try again."); return data as { success: true; data: { document: ApplicationDocumentReference } }; }
+export async function uploadApplicationDocument(applicationId: string, input: { file: File; documentType: string; ownerType?: "application" | "member"; ownerId?: string }) {
+  const formData = new FormData();
+  formData.append("file", input.file, input.file.name);
+  formData.append("documentType", input.documentType);
+  formData.append("ownerType", input.ownerType ?? "application");
+  if (input.ownerId) formData.append("ownerId", input.ownerId);
+
+  const response = await fetch(`${API_URL}/api/v1/applications/${encodeURIComponent(applicationId)}/documents`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "X-Document-Type": input.documentType,
+      "X-Document-Owner-Type": input.ownerType ?? "application",
+      ...(input.ownerId ? { "X-Document-Owner-Id": input.ownerId } : {}),
+      "X-File-Name": input.file.name,
+    },
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(data?.error?.message ?? "Document upload failed. Please try again.");
+  return data as { success: true; data: { document: ApplicationDocumentReference } };
+}
 export async function downloadApplicationDocument(applicationId: string, documentId: string, fileName: string) { const response = await fetch(`${API_URL}/api/v1/applications/${encodeURIComponent(applicationId)}/documents/${encodeURIComponent(documentId)}`, { credentials: "include" }); if (!response.ok) { const data = await response.json().catch(() => null); throw new Error(data?.error?.message ?? "Document download failed. Please try again."); } const blob = await response.blob(); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = fileName; document.body.appendChild(anchor); anchor.click(); anchor.remove(); URL.revokeObjectURL(url); }
 export async function getBilling(applicationId: string) { return apiRequest<BillingResponse>(`/api/v1/billing/${encodeURIComponent(applicationId)}`); } export async function createBillingOrder(applicationId: string) { return apiRequest<{ success: true; data: BillingOrder }>(`/api/v1/billing/${encodeURIComponent(applicationId)}/order`, { method: "POST" }); } export async function payBillingOrder(applicationId: string) { return apiRequest<{ success: true; data: BillingOrder }>(`/api/v1/billing/${encodeURIComponent(applicationId)}/payment`, { method: "POST" }); }
