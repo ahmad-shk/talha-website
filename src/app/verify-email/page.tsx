@@ -3,16 +3,41 @@
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle2, Loader2, MailWarning } from "lucide-react";
-import { verifyEmail } from "@/lib/api";
+import { CheckCircle2, Loader2, MailWarning, RefreshCw } from "lucide-react";
+import { resendVerification, verifyEmail } from "@/lib/api";
 
 function VerifyEmailContent() {
   const router = useRouter();
   const params = useSearchParams();
-  const token = params.get("token");
-  const email = params.get("email");
+  const token = params.get("token") ?? params.get("verificationToken") ?? params.get("verifyToken");
+  const emailFromQuery = params.get("email") ?? "";
+  const [email, setEmail] = useState(emailFromQuery);
   const [status, setStatus] = useState<"loading" | "success" | "error" | "missing-token" | "missing-email">("loading");
   const [message, setMessage] = useState("Verifying your email...");
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
+
+  const handleResend = async () => {
+    const targetEmail = email.trim();
+    if (!targetEmail) {
+      setStatus("missing-email");
+      setMessage("Enter your email address to request a new verification link.");
+      return;
+    }
+
+    setResending(true);
+    try {
+      await resendVerification(targetEmail);
+      setResent(true);
+      setStatus("error");
+      setMessage("A fresh verification email has been sent. Please use the new link to continue.");
+    } catch (error) {
+      setStatus("error");
+      setMessage(error instanceof Error ? error.message : "We could not send a new verification email. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  };
 
   useEffect(() => {
     if (!token) {
@@ -21,7 +46,7 @@ function VerifyEmailContent() {
       return;
     }
 
-    verifyEmail(email, token)
+    verifyEmail(email || null, token)
       .then(() => {
         setStatus("success");
         setMessage("Your email has been verified successfully.");
@@ -54,6 +79,31 @@ function VerifyEmailContent() {
             <Link href="/signup" className="inline-flex items-center justify-center rounded-[var(--fm-radius-pill)] border border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] px-5 py-3 text-sm font-semibold text-[var(--fm-text-primary)] transition hover:border-[var(--fm-lime)]">
               Create account
             </Link>
+          </div>
+        )}
+
+        {(status === "error" || status === "missing-token" || status === "missing-email") && (
+          <div className="mt-6 rounded-[var(--fm-radius-md)] border border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] p-4 text-left">
+            <label className="block text-left text-xs font-mono uppercase tracking-[.12em] text-[var(--fm-text-secondary)]">Email address</label>
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+              <input
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                type="email"
+                placeholder="you@example.com"
+                className="w-full rounded-[var(--fm-radius-md)] border border-[var(--fm-border)] bg-[var(--fm-surface-raised)] px-3 py-2.5 text-sm text-[var(--fm-text-primary)] outline-none placeholder:text-[var(--fm-text-tertiary)] transition focus:border-[var(--fm-lime)]"
+              />
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resending}
+                className="inline-flex items-center justify-center gap-2 rounded-[var(--fm-radius-pill)] bg-[var(--fm-lime)] px-4 py-2.5 text-sm font-bold text-[var(--fm-graphite-deep)] transition hover:bg-[var(--fm-lime-bright)] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {resending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                {resending ? "Sending..." : "Send new link"}
+              </button>
+            </div>
+            {resent && <p className="mt-3 text-xs text-[var(--fm-lime)]">New verification email sent.</p>}
           </div>
         )}
       </div>
