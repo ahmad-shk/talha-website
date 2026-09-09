@@ -38,7 +38,7 @@ export default function ProblemsSolutions() {
       </div>
       <div className="relative z-[2] mt-16 flex items-center gap-3">
         <Image src="/avatar_abd.svg" alt="Audvertax founder" width={46} height={46} className="h-[46px] w-[46px] rounded-full border-2 border-[var(--fm-border)] object-cover shadow-[var(--fm-shadow-subtle)]" />
-        <p className="text-left font-sans text-[15px] leading-snug text-[var(--fm-text-secondary)]"><span className="text-[21px] font-bold text-[var(--fm-lime)]" style={{ fontFamily: "var(--font-caveat), cursive" }}>US to Global</span><br />U.S. setup partner.</p>
+        <p className="text-left font-sans text-[15px] leading-snug text-[var(--fm-text-secondary)]"><span className="text-[21px] font-bold text-[var(--fm-lime)]" style={{ fontFamily: "var(--font-caveat), cursive" }}>Global</span><br /> setup partner.</p>
       </div>
     </section>
   );

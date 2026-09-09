@@ -247,7 +247,7 @@ export default function CountryPricingExplorer() {
             <>
               <div className="mb-12 max-w-[760px]">
                 <SectionLabel>Choose a market</SectionLabel>
-                <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Pricing is organized by where your business is being built.</h2>
+                <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Explore the services</h2>
                 <p className="mt-4 text-fm-body text-[var(--fm-text-secondary)]">Select Explore to open this same pricing page for the country you want to review.</p>
               </div>
               <div className="grid gap-fm-5 sm:grid-cols-2 lg:grid-cols-4">

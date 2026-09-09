@@ -10,7 +10,7 @@ export default function PricingSection() {
       <div className="relative z-[1] mx-auto max-w-[1400px]">
         <div className="mb-12 max-w-[760px]">
           <span className="mb-[18px] inline-block font-mono text-fm-label font-bold uppercase tracking-fm-label text-[var(--fm-lime)]">Choose a market</span>
-          <h2 id="services-heading" className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Pricing is organized by where your business is being built.</h2>
+          <h2 id="services-heading" className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Explore the services</h2>
           <p className="mt-4 text-fm-body text-[var(--fm-text-secondary)]">Explore the services available in each market, then choose the service that fits your business.</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

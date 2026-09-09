@@ -3,10 +3,10 @@ import { Activity, CalendarClock, FolderLock, LineChart } from "lucide-react";
 import { Card, IconContainer, SectionLabel } from "@/components/ui/design-system";
 
 const FEATURES = [
-  { icon: Activity, title: "LLC to Company", desc: "Active, pending, or under review, formation progress always visible." },
+  { icon: Activity, title: "Company status in real time", desc: "Active, pending, or under review, formation progress always visible." },
   { icon: CalendarClock, title: "Zero missed deadlines", desc: "Annual reports, renewals, and state filings, filed on time, automatically." },
-  { icon: FolderLock, title: "Sub-Material to company formation and filing", desc: "Operating agreement, EIN letter, state certificate, all in your secure dashboard." },
-  { icon: LineChart, title: "LLC to Process", desc: "Every payment of your LLC, tracked under one dashboard." },
+  { icon: FolderLock, title: "Company formation and filing", desc: "Operating agreement, EIN letter, state certificate, all in your secure dashboard." },
+  { icon: LineChart, title: "Process", desc: "Every payment of your Company, tracked under one dashboard." },
 ];
 
 export default function DashboardSection() {
