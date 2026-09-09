@@ -4,97 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Buildings, CaretDown, Check, FileText, MapPin, Sparkle } from "@phosphor-icons/react/dist/ssr";
 import { Card, SectionLabel } from "@/components/ui/design-system";
-import { getMarketHref } from "@/lib/markets";
+import { getMarketHref, getMarketServices, markets } from "@/lib/markets";
 import { getServiceBySlug, getServiceHref } from "@/lib/services";
 import type { Service } from "@/lib/services";
 
 type PricingNode = { title: string; serviceSlug?: string; children?: PricingNode[] };
-type Country = { key: string; name: string; code: string; description: string; nodes: PricingNode[] };
-
-const countries: Country[] = [
-  {
-    key: "usa",
-    name: "USA",
-    code: "US",
-    description: "U.S. formation, taxation and business infrastructure services.",
-    nodes: [
-      { title: "Company Registration", serviceSlug: "usa-llc" },
-      { title: "Taxation", serviceSlug: "usa-taxation" },
-    ],
-  },
-  {
-    key: "uk",
-    name: "UK",
-    code: "GB",
-    description: "UK company formation, compliance, VAT, tax and payroll services.",
-    nodes: [
-      { title: "LTD Registration", serviceSlug: "uk-ltd" },
-      {
-        title: "LTD Compliance",
-        children: [
-          { title: "Confirmation Statement", serviceSlug: "uk-confirmation-statement" },
-          { title: "Accounts Preparation", serviceSlug: "uk-accounts-preparation" },
-          { title: "HMRC & Companies House Submission", serviceSlug: "uk-hmrc-companies-house-submission" },
-        ],
-      },
-      {
-        title: "Taxation",
-        children: [
-          { title: "VAT Registration", serviceSlug: "uk-vat-registration" },
-          { title: "VAT Filing", serviceSlug: "uk-vat-filing" },
-          { title: "Self Assessment Registration", serviceSlug: "uk-self-assessment-registration" },
-          { title: "Self Assessment Filing", serviceSlug: "uk-self-assessment-filing" },
-          { title: "Corporate Tax", serviceSlug: "uk-corporate-tax" },
-          { title: "PAYE Registration", serviceSlug: "uk-payee-registration" },
-          { title: "Payroll Filing", serviceSlug: "uk-payroll-filing" },
-        ],
-      },
-      {
-        title: "LTD Name Matters",
-        children: [
-          { title: "LTD Name", serviceSlug: "uk-ltd-name" },
-          { title: "LTD Address Change", serviceSlug: "uk-ltd-address-change" },
-          { title: "Add Director", serviceSlug: "uk-add-director" },
-          { title: "Change Director Address", serviceSlug: "uk-change-director-address" },
-        ],
-      },
-      { title: "LTD Name Change", serviceSlug: "uk-ltd-name-change" },
-    ],
-  },
-  {
-    key: "uae",
-    name: "UAE",
-    code: "AE",
-    description: "UAE company registration, tax, VAT, excise and bookkeeping services.",
-    nodes: [
-      { title: "Company Registration", serviceSlug: "uae-company-registration" },
-      { title: "Corporate Tax Registration", serviceSlug: "uae-corporate-tax-registration" },
-      { title: "Corporate Tax Filing", serviceSlug: "uae-corporate-tax-filing" },
-      { title: "VAT Registration", serviceSlug: "uae-vat-registration" },
-      { title: "VAT Filing", serviceSlug: "uae-vat-filing" },
-      { title: "Excise Tax Registration", serviceSlug: "uae-excise-tax-registration" },
-      { title: "Excise Tax Filing", serviceSlug: "uae-excise-tax-filing" },
-      { title: "Bookkeeping", serviceSlug: "uae-bookkeeping" },
-    ],
-  },
-  {
-    key: "pak",
-    name: "PAK",
-    code: "PK",
-    description: "Pakistan taxation, company and business registration services.",
-    nodes: [
-      { title: "Taxation", serviceSlug: "pak-taxation" },
-      {
-        title: "Business Registration",
-        children: [
-          { title: "Private Company Registration", serviceSlug: "pak-private-company-registration" },
-          { title: "LLP Registration", serviceSlug: "pak-llp-registration" },
-        ],
-      },
-      { title: "Other Business Matters", serviceSlug: "pak-other-business-matters" },
-    ],
-  },
-];
 
 function formatPrice(price: number, currency: string) {
   if (price === 0) return "Custom";
@@ -163,7 +77,7 @@ function PricingDetail({ service }: { service: Service }) {
         <div className="divide-y divide-[var(--fm-card-divider)]">
           {packages.map((item, index) => (
             <div key={item.slug} className="p-6 sm:p-8">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
+              <div className="flex items-start justify-between gap-5">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-xl font-extrabold tracking-[-.03em] text-[var(--fm-card-text)]">{item.name}</h3>
@@ -214,7 +128,8 @@ function PricingDetail({ service }: { service: Service }) {
 export default function CountryPricingExplorer() {
   const [selectedCountryKey, setSelectedCountryKey] = useState<string | null>(null);
   const [selectedServiceSlug, setSelectedServiceSlug] = useState<string | null>(null);
-  const selectedCountry = countries.find((country) => country.key === selectedCountryKey) ?? null;
+  const selectedCountry = markets.find((market) => market.slug === selectedCountryKey) ?? null;
+  const selectedMarketServices = selectedCountry ? getMarketServices(selectedCountry) : [];
   const selectedService = selectedServiceSlug ? getServiceBySlug(selectedServiceSlug) : undefined;
 
   function selectCountry(key: string) {
@@ -231,12 +146,12 @@ export default function CountryPricingExplorer() {
 
   return (
     <main className="fm-page overflow-hidden">
-      <section className="relative isolate border-b border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] px-fm-5 pb-fm-20 pt-fm-20 text-[var(--fm-text-primary)] sm:px-fm-8 sm:pb-fm-24 sm:pt-fm-24 lg:pb-28 lg:pt-fm-32">
+      <section className="relative isolate border-b border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] px-fm-5 pb-fm-20 pt-fm-24 text-[var(--fm-text-primary)] sm:px-fm-8 sm:pb-fm-24 sm:pt-fm-28 lg:pb-28 lg:pt-fm-32">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,var(--fm-hero-glow),transparent_28%),linear-gradient(135deg,var(--fm-graphite-deep)_0%,var(--fm-graphite)_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(var(--fm-hero-grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--fm-hero-grid-line)_1px,transparent_1px)] [background-size:var(--fm-hero-grid-size)_var(--fm-hero-grid-size)] [mask-image:var(--fm-hero-grid-mask)]" />
         <div className="relative mx-auto max-w-[1400px]">
           <SectionLabel>Pricing</SectionLabel>
-          <h1 className="mt-5 max-w-[980px] font-display text-[clamp(3rem,6vw,5.9rem)] font-extrabold leading-[.94] tracking-[-.065em]">Choose your country. Explore the services. See the price.</h1>
+          <h1 className="mt-5 max-w-[980px] font-display text-[clamp(3rem,6vw,5.9rem)] font-extrabold leading-[.94] tracking-[-.065em]">Choose your country.<br/> <span className="text-[var(--fm-lime)]">See price.</span></h1>
           <p className="mt-7 max-w-[720px] text-[17px] leading-8 text-[var(--fm-text-secondary)] sm:text-[19px]">Pricing follows the same service hierarchy used across Audvertax, so you can move from a country to a main service, then into its sub-services and final service pricing.</p>
         </div>
       </section>
@@ -247,23 +162,23 @@ export default function CountryPricingExplorer() {
             <>
               <div className="mb-12 max-w-[760px]">
                 <SectionLabel>Choose a market</SectionLabel>
-                <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Explore the services</h2>
+                <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-text-primary)] sm:text-5xl">Pricing is organized by where your business is being built.</h2>
                 <p className="mt-4 text-fm-body text-[var(--fm-text-secondary)]">Select Explore to open this same pricing page for the country you want to review.</p>
               </div>
               <div className="grid gap-fm-5 sm:grid-cols-2 lg:grid-cols-4">
-                {countries.map((country, index) => (
-                  <Card key={country.key} variant="interactive" tone="dark" className="group flex min-h-[280px] flex-col justify-between p-7">
+                {markets.map((market, index) => (
+                  <Card key={market.slug} variant="interactive" tone="dark" className="group flex min-h-[280px] flex-col justify-between p-7">
                     <div>
                       <div className="flex items-center justify-between">
                         <span className="grid h-11 w-11 place-items-center rounded-full border border-[var(--fm-lime)]/25 bg-[var(--fm-lime)]/[.06] text-[var(--fm-lime-bright)]">
                           <MapPin className="h-5 w-5" weight="fill" />
                         </span>
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-[var(--fm-text-tertiary)]">{String(index + 1).padStart(2, "0")} / 04</span>
+                        <span className="font-mono text-[10px] font-bold uppercase tracking-[.14em] text-[var(--fm-text-tertiary)]">{String(index + 1).padStart(2, "0")} / {String(markets.length).padStart(2, "0")}</span>
                       </div>
-                      <h3 className="mt-8 font-display text-3xl font-extrabold tracking-[-.045em] text-[var(--fm-text-primary)]">{country.name}</h3>
-                      <p className="mt-3 text-sm leading-6 text-[var(--fm-text-secondary)]">{country.description}</p>
+                      <h3 className="mt-8 font-display text-3xl font-extrabold tracking-[-.045em] text-[var(--fm-text-primary)]">{market.name}</h3>
+                      <p className="mt-3 text-sm leading-6 text-[var(--fm-text-secondary)]">{market.description}</p>
                     </div>
-                    <Link href={getMarketHref(country.key)} className="mt-8 inline-flex items-center justify-between rounded-[var(--fm-radius-pill)] bg-[var(--fm-lime)] px-5 py-3.5 text-sm font-bold text-[var(--fm-graphite-deep)] transition-transform duration-[var(--fm-motion-component)] hover:-translate-y-px hover:bg-[var(--fm-lime-bright)]">Explore <ArrowRight weight="bold" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></Link>
+                    <button type="button" onClick={() => selectCountry(market.slug)} className="mt-8 inline-flex items-center justify-between rounded-[var(--fm-radius-pill)] bg-[var(--fm-lime)] px-5 py-3.5 text-sm font-bold text-[var(--fm-graphite-deep)] transition-transform duration-[var(--fm-motion-component)] hover:-translate-y-px hover:bg-[var(--fm-lime-bright)]">Explore <ArrowRight weight="bold" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></button>
                   </Card>
                 ))}
               </div>
@@ -276,12 +191,21 @@ export default function CountryPricingExplorer() {
                   <SectionLabel>{selectedCountry.code} market</SectionLabel>
                   <h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-.055em] text-[var(--fm-card-text)]">{selectedCountry.name}</h2>
                   <p className="mt-4 text-sm leading-6 text-[var(--fm-card-muted)]">{selectedCountry.description}</p>
-                  <div className="mt-8 flex items-center gap-3 text-sm text-[var(--fm-card-muted)]"><Buildings className="h-5 w-5 text-[var(--fm-card-action-bg)]" /> {selectedCountry.nodes.length} primary service areas</div>
+                  <div className="mt-8 flex items-center gap-3 text-sm text-[var(--fm-card-muted)]"><Buildings className="h-5 w-5 text-[var(--fm-card-action-bg)]" /> {selectedMarketServices.length} primary service areas</div>
                 </Card>
                 <div>
                   <SectionLabel>Services</SectionLabel>
                   <h2 className="mt-3 font-display text-3xl font-extrabold tracking-[-.045em] text-[var(--fm-text-primary)]">Explore {selectedCountry.name} services</h2>
-                  <div className="mt-6"><NodeList nodes={selectedCountry.nodes} selectedSlug={selectedServiceSlug} onSelect={setSelectedServiceSlug} /></div>
+                  <div className="mt-6">
+                    <NodeList
+                      nodes={selectedMarketServices.map(({ group, services }) => ({
+                        title: group.title,
+                        children: services.map((service) => ({ title: service.name, serviceSlug: service.slug })),
+                      }))}
+                      selectedSlug={selectedServiceSlug}
+                      onSelect={setSelectedServiceSlug}
+                    />
+                  </div>
                 </div>
               </div>
               {selectedService && <div className="mt-10"><PricingDetail service={selectedService} /></div>}

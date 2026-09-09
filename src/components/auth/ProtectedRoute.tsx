@@ -10,10 +10,10 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && (!user || user.emailVerified === false)) router.replace("/login");
+    if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
 
-  if (loading || !user || user.emailVerified === false) {
+  if (loading || !user) {
     return <main className="grid min-h-screen place-items-center bg-[var(--fm-graphite)]"><Loader2 className="h-6 w-6 animate-spin text-[var(--fm-lime)]" /></main>;
   }
 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter, Unbounded } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/page-coherence.css";
 import GlobalCursorGlow from "@/components/GlobalCursorGlow";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import Preloader from "@/components/Preloader";
@@ -9,8 +10,8 @@ import SiteChrome from "@/components/SiteChrome";
 import ApplicationStateProvider from "@/components/application/ApplicationStateProvider";
 import AuthProvider from "@/components/auth/AuthProvider";
 
-const unbounded = Unbounded({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-unbounded", display: "swap" });
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-inter", display: "swap" });
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Audvertax, Get a U.S. Company and Finally Get Paid",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`bg-[var(--fm-graphite)] ${unbounded.variable} ${inter.variable}`}>
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <body className="antialiased">
         <AuthProvider>
           <ApplicationStateProvider>

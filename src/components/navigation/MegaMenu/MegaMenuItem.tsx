@@ -6,7 +6,7 @@ import { CaretDown, CaretRight } from "@phosphor-icons/react";
 import { megaMenuStyles } from "./MegaMenu.styles";
 import type { MegaMenuItem as MegaMenuItemData } from "./MegaMenu.types";
 
-export default function MegaMenuItem({ item, nested = false }: { item: MegaMenuItemData; nested?: boolean }) {
+export default function MegaMenuItem({ item, nested = false, onNavigate }: { item: MegaMenuItemData; nested?: boolean; onNavigate?: () => void }) {
   const [open, setOpen] = useState(false);
 
   if (item.children?.length) {
@@ -29,7 +29,7 @@ export default function MegaMenuItem({ item, nested = false }: { item: MegaMenuI
         {open && (
           <div className={megaMenuStyles.nestedBox}>
             {item.children.map((child) => (
-              <MegaMenuItem key={`${child.title}-${child.href ?? "group"}`} item={child} nested />
+              <MegaMenuItem key={`${child.title}-${child.href ?? "group"}`} item={child} nested onNavigate={onNavigate} />
             ))}
           </div>
         )}
@@ -40,7 +40,7 @@ export default function MegaMenuItem({ item, nested = false }: { item: MegaMenuI
   if (!item.href) return null;
 
   return (
-    <Link href={item.href} role="menuitem" className={megaMenuStyles.item}>
+    <Link href={item.href} role="menuitem" className={megaMenuStyles.item} onClick={onNavigate}>
       {item.icon && <span aria-hidden="true" className={megaMenuStyles.itemIcon}>{item.icon}</span>}
       <span className="min-w-0">
         <span className={megaMenuStyles.itemTitle}>{item.title}</span>

@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { createPortal } from "react-dom";
 import { useEffect, useId, useRef, useState } from "react";
 import MegaMenuItem from "./MegaMenuItem";
 import { megaMenuStyles } from "./MegaMenu.styles";
 import type { MegaMenuConfig, MegaMenuGroup, MegaMenuItem as MegaMenuItemData } from "./MegaMenu.types";
 
-const CLOSE_ANIMATION_MS = 220;
+const CLOSE_ANIMATION_MS = 320;
 
 function MobileServiceItem({ item }: { item: MegaMenuItemData }) {
   if (item.children?.length) {
@@ -54,21 +53,14 @@ export default function MegaMenu({ config }: { config: MegaMenuConfig }) {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [open, setOpen] = useState(false);
   const [rendered, setRendered] = useState(false);
-  const [menuTop, setMenuTop] = useState(0);
 
   const clearCloseTimer = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
     closeTimerRef.current = null;
   };
 
-  const updateMenuPosition = () => {
-    const header = triggerRef.current?.closest("header");
-    if (header) setMenuTop(header.getBoundingClientRect().bottom + 8);
-  };
-
   const openMenu = () => {
     clearCloseTimer();
-    updateMenuPosition();
     setRendered(true);
     requestAnimationFrame(() => setOpen(true));
   };
@@ -80,17 +72,6 @@ export default function MegaMenu({ config }: { config: MegaMenuConfig }) {
   };
 
   useEffect(() => () => clearCloseTimer(), []);
-
-  useEffect(() => {
-    if (!rendered) return;
-    updateMenuPosition();
-    window.addEventListener("resize", updateMenuPosition);
-    window.addEventListener("scroll", updateMenuPosition, { passive: true });
-    return () => {
-      window.removeEventListener("resize", updateMenuPosition);
-      window.removeEventListener("scroll", updateMenuPosition);
-    };
-  }, [rendered]);
 
   useEffect(() => {
     const handleOutsidePointerDown = (event: PointerEvent) => {
@@ -144,7 +125,7 @@ export default function MegaMenu({ config }: { config: MegaMenuConfig }) {
   };
 
   const panel = rendered ? (
-    <div ref={panelRef} id={menuId} role="menu" aria-label={`${config.label} menu`} onKeyDown={handleMenuKeyDown} onClick={handleMenuClick} className={`${megaMenuStyles.panel} ${open ? megaMenuStyles.panelOpen : megaMenuStyles.panelClosed}`} style={{ top: menuTop }}>
+    <div ref={panelRef} id={menuId} role="menu" aria-label={`${config.label} menu`} onKeyDown={handleMenuKeyDown} onClick={handleMenuClick} className={`${megaMenuStyles.panel} ${open ? megaMenuStyles.panelOpen : megaMenuStyles.panelClosed}`}>
       <div className={megaMenuStyles.header}>
         <div>
           <div className={megaMenuStyles.headerEyebrow}>Service</div>
@@ -170,7 +151,7 @@ export default function MegaMenu({ config }: { config: MegaMenuConfig }) {
       <button ref={triggerRef} type="button" className={megaMenuStyles.trigger} aria-expanded={open} aria-controls={menuId} onClick={() => (open ? closeMenu() : openMenu())} onKeyDown={handleTriggerKeyDown}>
         {config.label}<ChevronDown className={`h-3.5 w-3.5 transition-transform duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] ${open ? "rotate-180" : ""}`} aria-hidden="true" />
       </button>
-      {typeof document !== "undefined" && panel ? createPortal(panel, document.body) : null}
+      {panel}
     </div>
   );
 }

@@ -7,7 +7,6 @@ import { ArrowRight, Loader2, ShieldCheck } from "lucide-react";
 import { register } from "@/lib/api";
 import GuestGuard from "@/components/auth/GuestGuard";
 import { useAuth } from "@/components/auth/AuthProvider";
-import EmailVerificationModal from "@/components/auth/EmailVerificationModal";
 import { Card, SectionLabel } from "@/components/ui/design-system";
 
 const pendingKey = "audvertax.pendingApplicationSelection";
@@ -26,7 +25,6 @@ function SignupForm() {
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
 
   function update(field: keyof typeof form, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -60,7 +58,8 @@ function SignupForm() {
     setLoading(true);
     try {
       const response = await register(form);
-      setVerificationEmail(response.data.user.email);
+      setAuthenticatedUser(response.data.user);
+      await continueAfterAuth();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create your account.");
     } finally {
@@ -68,15 +67,8 @@ function SignupForm() {
     }
   }
 
-  const handleVerified = async () => {
-    setVerificationEmail(null);
-    await continueAfterAuth();
-  };
-
   return (
-    <>
-      <EmailVerificationModal email={verificationEmail} open={Boolean(verificationEmail)} onVerified={handleVerified} />
-      <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[var(--fm-graphite-deep)] px-5 py-16 text-[var(--fm-text-primary)] sm:px-8 lg:py-24">
+    <main className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-[var(--fm-graphite-deep)] px-5 py-16 text-[var(--fm-text-primary)] sm:px-8 lg:py-24">
       <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(color-mix(in_srgb,var(--fm-lime)_7%,transparent)_1px,transparent_1px),linear-gradient(90deg,color-mix(in_srgb,var(--fm-lime)_7%,transparent)_1px,transparent_1px)] [background-size:64px_64px]" />
       <Card variant="feature" tone="dark" className="relative mx-auto grid w-full max-w-5xl overflow-hidden lg:grid-cols-[.88fr_1.12fr]">
         <div className="relative hidden overflow-hidden border-r border-[var(--fm-card-border)] bg-[var(--fm-graphite-deep)] p-10 lg:flex lg:flex-col lg:justify-between lg:p-12">
@@ -128,8 +120,7 @@ function SignupForm() {
           <p className="mt-8 text-center text-sm text-[var(--fm-text-tertiary)]">Already have an account? <Link href="/login" className="font-semibold text-[var(--fm-lime)] hover:underline">Sign in</Link></p>
         </div>
       </Card>
-      </main>
-    </>
+    </main>
   );
 }
 

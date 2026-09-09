@@ -1,0 +1,25 @@
+:root {
+  /* Shared secondary-page hero rhythm. */
+  --fm-page-hero-padding-top: 6rem;
+  --fm-page-hero-padding-bottom: 5rem;
+}
+
+/* Pricing uses the same hero breathing room as How It Works, Resources, and About. */
+.pricing-page main.fm-page > section:first-child {
+  padding-top: var(--fm-page-hero-padding-top);
+  padding-bottom: var(--fm-page-hero-padding-bottom);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --fm-page-hero-padding-top: 7rem;
+    --fm-page-hero-padding-bottom: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --fm-page-hero-padding-top: 8rem;
+    --fm-page-hero-padding-bottom: 7rem;
+  }
+}

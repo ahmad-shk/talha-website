@@ -1,7 +1,7 @@
 export const megaMenuStyles = {
   wrapper: "static",
   trigger: "inline-flex items-center gap-1 rounded-[var(--fm-radius-md)] px-3.5 py-2 font-sans text-[15px] font-medium text-[var(--fm-text-secondary)] transition-[background-color,color] duration-[var(--fm-motion-micro)] ease-[var(--fm-motion-ease)] hover:bg-[var(--fm-lime-soft)] hover:text-[var(--fm-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--fm-lime)]/40",
-  panel: "fixed left-[90vw] z-[120] w-[min(1180px,calc(100vw-32px))] -translate-x-1/2 -origin-top rounded-[var(--fm-radius-feature)] border border-[var(--fm-border)] bg-[var(--fm-surface)] shadow-[var(--fm-shadow-elevated)] backdrop-blur-xl",
+  panel: "absolute left-1/2 top-[calc(100%+8px)] z-[120] w-[min(1180px,calc(100vw-32px))] -translate-x-1/2 origin-top overflow-hidden rounded-[var(--fm-radius-feature)] border border-[var(--fm-border)] bg-[var(--fm-surface)] shadow-[var(--fm-shadow-elevated)] backdrop-blur-xl",
   panelOpen: "mega-menu-panel--open",
   panelClosed: "mega-menu-panel--closed",
   header: "flex items-end justify-between gap-fm-6 border-b border-[var(--fm-border-soft)] px-fm-6 py-fm-5",

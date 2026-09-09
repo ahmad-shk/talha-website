@@ -1,10 +1,10 @@
 import { Card } from "@/components/ui/design-system";
 
 const STEPS = [
-  { n: "01", title: "Sign Up", desc: "Pick your entity, U.S. LLC or UK Ltd, and fill in your details. The entire onboarding takes under 10 minutes. No lawyers, no jargon." },
+  { n: "01", title: "Sign Up", desc: "Pick your entity, U.S. LLC or UK Ltd, and fill in your details. The entire onboarding takes under 10 minutes. No lawyers, no jargon, no flying to the U.S." },
   { n: "02", title: "We Verify", desc: "Our team reviews your information, runs compliance checks, and confirms every detail is accurate and IRS-ready before touching any state or HMRC filings." },
   { n: "03", title: "We File Everything", desc: "LLC/Ltd formation, EIN or ITIN application, registered agent, and operating agreement, all done in your name, by our specialists, while you focus on your work." },
-  { n: "04", title: "Start Getting Paid", desc: "Your Audvertax docs arrive in your Audvertax dashboard." },
+  { n: "04", title: "Start Getting Paid", desc: "Your Audvertax docs arrive in your Audvertax dashboard. We activate Stripe, PayPal, Payoneer, and Zelle under your new entity so you can invoice global clients today." },
 ];
 
 export default function ProcessSection() {

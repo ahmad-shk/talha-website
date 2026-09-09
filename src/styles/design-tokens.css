@@ -54,41 +54,92 @@
 
 :root {
   /* Foremint design system — single source of truth */
-  --fm-graphite-deep: #f1f5f9;
-  --fm-graphite: #ffffff;
-  --fm-surface: #ffffff;
-  --fm-surface-raised: #f8fafc;
-  --fm-surface-high: #e2e8f0;
-  --fm-border: #cbd5e1;
-  --fm-border-soft: #e2e8f0;
-  --fm-border-accent: rgba(81, 70, 165, 0.45);
+  --fm-graphite-deep: #FFFFFF;
+  --fm-graphite: #FFFFFF;
+  --fm-surface: #FFFFFF;
+  --fm-surface-raised: #F7F7F8;
+  --fm-surface-high: #EFEFF1;
+  --fm-border: #D8D5DF;
+  --fm-border-soft: #E8E6EC;
+  --fm-border-accent: rgba(87, 58, 150, 0.45);
 
-  --fm-text-primary: #0f172a;
-  --fm-text-secondary: #475569;
-  --fm-text-tertiary: #64748b;
-  --fm-text-disabled: #94a3b8;
+  --fm-text-primary: #000000;
+  --fm-text-secondary: #45414C;
+  --fm-text-tertiary: #706B78;
+  --fm-text-disabled: #AAA6B0;
 
-  --fm-lime: #5146A5;
-  --fm-lime-bright: #6D63C2;
-  --fm-lime-soft: rgba(81, 70, 165, 0.10);
-  --fm-lime-glow: rgba(81, 70, 165, 0.08);
+  --fm-lime: #573A96;
+  --fm-lime-bright: #7556B8;
+  --fm-lime-soft: rgba(87, 58, 150, 0.10);
+  --fm-lime-glow: rgba(87, 58, 150, 0.10);
+
+  /* Cards use the primary purple as their default border */
+  --fm-card-border: var(--fm-lime);
+
+  /* Main Problems & Solutions card palette */
+  --fm-card-tint-peach-strong: rgba(154, 92, 240, 0.24);
+  --fm-card-tint-peach-soft: rgba(200, 170, 255, 0.16);
+  --fm-card-tint-peach-marble: radial-gradient(circle at 33% 27%, #e2cbff 0%, #9a5cf0 36%, #6a2fd2 76%, #48189e 100%);
+  --fm-card-tint-blue-strong: rgba(80, 112, 246, 0.24);
+  --fm-card-tint-blue-soft: rgba(170, 190, 255, 0.16);
+  --fm-card-tint-blue-marble: radial-gradient(circle at 33% 27%, #c3d2ff 0%, #5070f6 36%, #2a45d2 76%, #16259e 100%);
+  --fm-card-interactive-border: rgba(255, 255, 255, 0.70);
+  --fm-card-interactive-shadow: 0 22px 44px -14px rgba(60, 50, 70, 0.24), 0 4px 12px rgba(60, 50, 70, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  --fm-card-interactive-hover-shadow: 0 36px 64px -18px rgba(52, 7, 143, 0.32);
+  --fm-card-interactive-gradient-highlight: rgba(255, 255, 255, 0.42);
+  --fm-card-interactive-gradient-end: rgba(255, 255, 255, 0.30);
+  --fm-card-marker-shadow: inset -3px -5px 9px rgba(10, 20, 120, 0.5), inset 3px 3px 7px rgba(255, 255, 255, 0.45), 0 9px 13px -3px rgba(0, 0, 0, 0.35);
+  --fm-card-interactive-title: #2f2f38;
+  --fm-card-interactive-quote: #8a8194;
+  --fm-card-interactive-body: #5e5e68;
+
+  /* Preloader visual tokens extracted from main */
+  --fm-preloader-background: #34078f;
+  --fm-preloader-glow: rgba(147, 86, 255, 0.28);
+  --fm-preloader-gradient-start: #1d0560;
+  --fm-preloader-gradient-end: #28066e;
+  --fm-preloader-grid-line: rgba(255, 255, 255, 0.05);
+  --fm-preloader-grid-size: 64px;
+  --fm-preloader-grid-mask: radial-gradient(75% 75% at 50% 45%, #000 35%, transparent 80%);
+  --fm-preloader-exit-scale: 0.94;
+  --fm-preloader-progress-size: clamp(48px, 9vw, 84px);
+  --fm-preloader-progress-tracking: -0.04em;
+  --fm-preloader-status-size: 11px;
+  --fm-preloader-status-tracking: 0.18em;
+  --fm-preloader-text: #FFFFFF;
+  --fm-preloader-text-soft: rgba(255, 255, 255, 0.80);
+  --fm-preloader-status-text: rgba(255, 255, 255, 0.85);
+  --fm-preloader-exit-ease: cubic-bezier(.65, 0, .35, 1);
+
+  /* Hero mesh atmosphere extracted from main */
+  --fm-hero-mesh-glow-primary: rgba(106, 47, 214, 0.15);
+  --fm-hero-mesh-glow-secondary: rgba(52, 7, 143, 0.09);
+  --fm-hero-mesh-glow-tertiary: rgba(106, 47, 214, 0.07);
+  --fm-hero-mesh-orb-primary: rgba(106, 47, 214, 0.10);
+  --fm-hero-mesh-orb-secondary: rgba(52, 7, 143, 0.08);
+  --fm-hero-mesh-orb-tertiary: rgba(147, 86, 255, 0.08);
+  --fm-hero-mesh-grid-line: rgba(52, 7, 143, 0.10);
+  --fm-hero-mesh-grid-size: 64px;
+  --fm-hero-mesh-grid-opacity: 0.90;
+  --fm-hero-mesh-grid-mask: radial-gradient(120% 90% at 50% 12%, #000 35%, transparent 80%);
+  --fm-hero-mesh-fade: linear-gradient(transparent 55%, #fff 92%);
 
   /* Shared atmosphere for navigational hero sections */
-  --fm-hero-glow: rgba(81, 70, 165, 0.18);
-  --fm-hero-glow-soft: rgba(81, 70, 165, 0.08);
+  --fm-hero-glow: rgba(87, 58, 150, 0.16);
+  --fm-hero-glow-soft: rgba(87, 58, 150, 0.07);
   --fm-hero-glow-blur: 90px;
-  --fm-hero-grid-line: rgba(81, 70, 165, 0.055);
+  --fm-hero-grid-line: rgba(87, 58, 150, 0.065);
   --fm-hero-grid-size: 42px;
   --fm-hero-grid-mask: linear-gradient(to bottom, black, transparent 88%);
 
-  --fm-success: #76C893;
-  --fm-success-soft: rgba(118, 200, 147, .10);
-  --fm-info: #67B7D1;
-  --fm-info-soft: rgba(103, 183, 209, .10);
-  --fm-warning: #E2C46D;
-  --fm-warning-soft: rgba(226, 196, 109, .10);
-  --fm-danger: #E27D78;
-  --fm-danger-soft: rgba(226, 125, 120, .10);
+  --fm-success: #27834B;
+  --fm-success-soft: rgba(39, 131, 75, .10);
+  --fm-info: #6651A3;
+  --fm-info-soft: rgba(102, 81, 163, .10);
+  --fm-warning: #9A7411;
+  --fm-warning-soft: rgba(154, 116, 17, .10);
+  --fm-danger: #B3423D;
+  --fm-danger-soft: rgba(179, 66, 61, .10);
 
   --fm-radius-sm: 10px;
   --fm-radius-md: 12px;
@@ -97,9 +148,9 @@
   --fm-radius-feature: 24px;
   --fm-radius-pill: 999px;
 
-  --fm-shadow-subtle: 0 8px 30px rgba(0, 0, 0, .10);
-  --fm-shadow-elevated: 0 20px 60px rgba(0, 0, 0, .20);
-  --fm-shadow-modal: 0 28px 80px rgba(0, 0, 0, .34);
+  --fm-shadow-subtle: 0 8px 30px rgba(0, 0, 0, .08);
+  --fm-shadow-elevated: 15px 20px 20px rgba(0, 0, 0, .12);
+  --fm-shadow-modal: 0 28px 80px rgba(0, 0, 0, .18);
 
   --fm-space-1: 4px;
   --fm-space-2: 8px;
@@ -125,7 +176,7 @@
   --fm-type-hero-size: clamp(3rem, 6vw, 5.9rem);
   --fm-type-hero-line-height: 0.94;
 
-  --fm-focus-ring: rgba(0, 119, 182, .55);
+  --fm-focus-ring: rgba(87, 58, 150, .60);
   --fm-motion-micro: 180ms;
   --fm-motion-component: 280ms;
   --fm-motion-section: 550ms;

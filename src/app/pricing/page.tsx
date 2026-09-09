@@ -1,5 +1,9 @@
 import CountryPricingExplorer from "@/components/pricing/CountryPricingExplorer";
 
 export default function PricingPage() {
-  return <CountryPricingExplorer />;
+  return (
+    <div className="pricing-page">
+      <CountryPricingExplorer />
+    </div>
+  );
 }

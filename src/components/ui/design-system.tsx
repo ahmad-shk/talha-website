@@ -4,14 +4,21 @@ import { cn } from '@/lib/utils'
 type CardTone = 'default' | 'lime' | 'dark'
 type CardStyle = React.CSSProperties & Record<`--${string}`, string>
 
-const cardBase = 'rounded-[var(--fm-radius-xl)] border bg-[var(--fm-card-bg)] text-[var(--fm-card-text)] shadow-[var(--fm-shadow-subtle)] transition-[transform,border-color,background-color,box-shadow] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)]'
+const cardBase = 'rounded-[var(--fm-radius-xl)] border border-[var(--fm-card-border)] bg-[var(--fm-card-bg)] text-[var(--fm-card-text)] shadow-[var(--fm-shadow-subtle)] transition-[transform,border-color,background-color,box-shadow] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)]'
 
 export const cardVariants = {
-  standard: `${cardBase} border-[var(--fm-card-border)]`,
-  elevated: `${cardBase} border-[var(--fm-card-border)] shadow-[var(--fm-shadow-elevated)]`,
-  interactive: `${cardBase} hover:-translate-y-1 hover:border-[var(--fm-border-accent)] hover:bg-[var(--fm-card-hover-bg)] hover:shadow-[var(--fm-shadow-elevated)]`,
-  feature: `${cardBase} rounded-[var(--fm-radius-feature)] border-[var(--fm-card-border)] shadow-[var(--fm-shadow-elevated)]`,
+  standard: cardBase,
+  elevated: `${cardBase} shadow-[var(--fm-shadow-elevated)]`,
+  interactive: `${cardBase} rounded-[var(--fm-radius-feature)] border-[var(--fm-card-interactive-border)] bg-[linear-gradient(158deg,var(--fm-card-tint-strong)_0%,var(--fm-card-tint-soft)_32%,var(--fm-card-interactive-gradient-highlight)_70%,var(--fm-card-interactive-gradient-end)_100%)] shadow-[var(--fm-card-interactive-shadow)] backdrop-blur-xl [transform:rotate(var(--fm-card-rotate))] hover:[transform:translateY(-10px)_rotate(0deg)_scale(1.03)] hover:border-[var(--fm-card-interactive-border)] hover:shadow-[var(--fm-card-interactive-hover-shadow)]`,
+  feature: `${cardBase} rounded-[var(--fm-radius-feature)] shadow-[var(--fm-shadow-elevated)]`,
 } as const
+
+const cardInteractiveDefaults: CardStyle = {
+  '--fm-card-tint-strong': 'var(--fm-card-tint-blue-strong)',
+  '--fm-card-tint-soft': 'var(--fm-card-tint-blue-soft)',
+  '--fm-card-marker': 'var(--fm-card-tint-blue-marble)',
+  '--fm-card-rotate': '0deg',
+}
 
 const cardToneStyles: Record<CardTone, CardStyle> = {
   default: {
@@ -19,7 +26,7 @@ const cardToneStyles: Record<CardTone, CardStyle> = {
     '--fm-card-hover-bg': 'var(--fm-surface-raised)',
     '--fm-card-text': 'var(--fm-text-primary)',
     '--fm-card-muted': 'var(--fm-text-secondary)',
-    '--fm-card-border': 'var(--fm-border)',
+    '--fm-card-border': 'var(--fm-lime)',
     '--fm-card-divider': 'var(--fm-border)',
     '--fm-card-action-bg': 'var(--fm-lime)',
     '--fm-card-action-text': 'var(--fm-graphite-deep)',
@@ -41,7 +48,7 @@ const cardToneStyles: Record<CardTone, CardStyle> = {
     '--fm-card-hover-bg': 'var(--fm-surface-raised)',
     '--fm-card-text': 'var(--fm-text-primary)',
     '--fm-card-muted': 'var(--fm-text-secondary)',
-    '--fm-card-border': 'var(--fm-border-accent)',
+    '--fm-card-border': 'var(--fm-lime)',
     '--fm-card-divider': 'color-mix(in srgb, var(--fm-lime) 20%, transparent)',
     '--fm-card-action-bg': 'var(--fm-lime)',
     '--fm-card-action-text': 'var(--fm-graphite-deep)',
@@ -50,7 +57,7 @@ const cardToneStyles: Record<CardTone, CardStyle> = {
 }
 
 export function Card({ className, variant = 'standard', tone = 'default', style, ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: keyof typeof cardVariants; tone?: CardTone }) {
-  return <div className={cn(cardVariants[variant], className)} style={{ ...cardToneStyles[tone], ...style } as CardStyle} {...props} />
+  return <div className={cn(cardVariants[variant], className)} style={{ ...cardInteractiveDefaults, ...cardToneStyles[tone], ...style } as CardStyle} {...props} />
 }
 
 export function CardAction({ className, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {

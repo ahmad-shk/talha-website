@@ -5,7 +5,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--fm-graphite-deep);
+  background: var(--fm-preloader-background);
   transition: opacity var(--fm-motion-preloader) var(--fm-motion-ease);
 }
 
@@ -19,7 +19,7 @@
   inset: 0;
   background:
     radial-gradient(60% 50% at 50% 38%, var(--fm-preloader-glow) 0%, transparent 62%),
-    linear-gradient(160deg, var(--fm-graphite-deep) 0%, var(--fm-graphite) 55%, var(--fm-surface-raised) 100%);
+    linear-gradient(160deg, var(--fm-preloader-gradient-start) 0%, var(--fm-preloader-background) 55%, var(--fm-preloader-gradient-end) 100%);
 }
 
 .preloader__grid {
@@ -42,7 +42,7 @@
   align-items: center;
   gap: var(--fm-space-3);
   transform: scale(1);
-  transition: transform var(--fm-motion-preloader) var(--fm-motion-ease);
+  transition: transform var(--fm-motion-preloader) var(--fm-preloader-exit-ease);
 }
 
 .preloader--exiting .preloader__content {
@@ -53,7 +53,7 @@
   display: flex;
   align-items: baseline;
   margin: 0;
-  color: var(--fm-text-primary);
+  color: var(--fm-preloader-text);
   font-family: var(--font-mono), monospace;
   font-size: var(--fm-preloader-progress-size);
   font-weight: 800;
@@ -63,14 +63,14 @@
 
 .preloader__percent {
   margin-left: var(--fm-space-1);
-  color: var(--fm-text-secondary);
+  color: var(--fm-preloader-text-soft);
   font-size: 0.42em;
   font-weight: 700;
 }
 
 .preloader__status {
   margin: 0;
-  color: var(--fm-text-secondary);
+  color: var(--fm-preloader-status-text);
   font-family: var(--font-mono), monospace;
   font-size: var(--fm-preloader-status-size);
   font-weight: 600;
