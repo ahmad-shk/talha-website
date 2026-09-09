@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "../styles/design-tokens.css";
+@import "../src/styles/design-tokens.css";
 
 @layer base {
   :root {
@@ -7,11 +7,9 @@
     --font-display: var(--font-unbounded);
     --font-mono: var(--font-inter);
   }
-  * { box-sizing: border-box; scrollbar-width: none; }
-  *::-webkit-scrollbar { width: 0; height: 0; display: none; }
-  html { scroll-behavior: smooth; background: var(--fm-graphite); overflow-x: hidden; scrollbar-width: none; }
-  html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
-  body { min-width: 320px; margin: 0; overflow-x: hidden; scrollbar-width: none; background: var(--fm-graphite); color: var(--fm-text-primary); font-family: var(--font-inter), sans-serif; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--fm-graphite); overflow-x: hidden; }
+  body { min-width: 320px; margin: 0; overflow-x: hidden; background: var(--fm-graphite); color: var(--fm-text-primary); font-family: var(--font-inter), sans-serif; }
   img, svg, video, canvas { max-width: 100%; }
   input, textarea, select { max-width: 100%; }
   :where(p, li, h1, h2, h3, h4, h5, h6) { overflow-wrap: anywhere; }
@@ -121,11 +119,6 @@
   .no-scrollbar::-webkit-scrollbar { display:none; }
   .no-scrollbar { scrollbar-width:none; }
   .safe-bottom { padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); }
-  .mobile-nav-scrollbar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--fm-lime) 58%, transparent) transparent; }
-  .mobile-nav-scrollbar::-webkit-scrollbar { display:block; width:5px; }
-  .mobile-nav-scrollbar::-webkit-scrollbar-track { background:transparent; }
-  .mobile-nav-scrollbar::-webkit-scrollbar-thumb { border-radius:999px; background:color-mix(in srgb, var(--fm-lime) 58%, transparent); }
-  .mobile-nav-scrollbar::-webkit-scrollbar-thumb:hover { background:var(--fm-lime-bright); }
 }
 
 @media (max-width: 639px) {

@@ -19,16 +19,16 @@ const CARDS: CardData[] = [
 
 export default function ProblemsSolutions() {
   return (
-    <section aria-labelledby="ps-heading" className="relative flex w-full flex-col items-center overflow-hidden bg-[var(--fm-graphite)] px-4 py-24 text-[var(--fm-text-primary)]">
+    <section aria-labelledby="ps-heading" className="relative flex w-full min-w-0 flex-col items-center overflow-hidden bg-[var(--fm-graphite)] px-4 py-20 sm:py-24 text-[var(--fm-text-primary)]">
       <div className="pointer-events-none absolute inset-0 z-0" style={{ background: "radial-gradient(60% 45% at 50% -6%, color-mix(in srgb, var(--fm-lime) 10%, transparent) 0%, transparent 60%), radial-gradient(40% 40% at 88% 6%, color-mix(in srgb, var(--fm-lime) 6%, transparent) 0%, transparent 65%), radial-gradient(45% 45% at 8% 18%, color-mix(in srgb, var(--fm-lime) 4%, transparent) 0%, transparent 65%), radial-gradient(50% 40% at 50% 104%, color-mix(in srgb, var(--fm-lime) 5%, transparent) 0%, transparent 62%)", maskImage: "linear-gradient(transparent 0%, #000 14% 84%, transparent 100%)", WebkitMaskImage: "linear-gradient(transparent 0%, #000 14% 84%, transparent 100%)" }} />
       <div className="relative z-[2] flex w-full flex-col items-center text-center">
         <SectionLabel>Problems &amp; Solutions</SectionLabel>
         <h2 id="ps-heading" className="mx-auto mt-4 max-w-3xl font-display text-fm-section font-extrabold tracking-[-.025em] text-[var(--fm-text-primary)]">Real Problems.<br />Real Audvertax Solutions.</h2>
         <p className="mx-auto mt-4 max-w-xl text-base text-[var(--fm-text-secondary)]" style={{ fontSize: "clamp(15px, 2.4vw, 18px)" }}>What founders actually tell us, and exactly how we fix it, end to end.</p>
       </div>
-      <div className="relative z-[2] mx-auto mt-16 grid w-full max-w-[1180px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="relative z-[2] mx-auto mt-12 grid w-full max-w-[1180px] min-w-0 grid-cols-1 gap-7 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
         {CARDS.map((card) => (
-          <Card key={card.title} variant="interactive" tone="dark" className="group relative mt-5 min-h-[280px] p-[26px] pt-[30px]" style={{ transform: `rotate(${card.rotate}deg)` }}>
+          <Card key={card.title} variant="interactive" tone="dark" className="group relative mt-5 min-h-[280px] min-w-0 p-5 pt-[30px] sm:p-[26px] sm:pt-[30px]" style={{ transform: `rotate(${card.rotate}deg)` }}>
             <span className="absolute -top-[19px] left-1/2 h-10 w-10 -translate-x-1/2 rounded-full border border-[var(--fm-border-accent)] bg-[var(--fm-lime)] shadow-[var(--fm-shadow-subtle)] transition-transform duration-[var(--fm-motion-component)] group-hover:-translate-y-1 group-hover:scale-110" />
             <h3 className="font-display text-[22px] font-bold leading-tight text-[var(--fm-text-primary)]" style={{ letterSpacing: "-0.3px" }}>{card.title}</h3>
             <p className="mt-2 font-sans text-[13.5px] font-semibold italic leading-snug text-[var(--fm-lime)]">{card.quote}</p>

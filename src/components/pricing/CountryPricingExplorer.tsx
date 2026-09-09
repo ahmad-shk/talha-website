@@ -163,7 +163,7 @@ function PricingDetail({ service }: { service: Service }) {
         <div className="divide-y divide-[var(--fm-card-divider)]">
           {packages.map((item, index) => (
             <div key={item.slug} className="p-6 sm:p-8">
-              <div className="flex items-start justify-between gap-5">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-display text-xl font-extrabold tracking-[-.03em] text-[var(--fm-card-text)]">{item.name}</h3>
