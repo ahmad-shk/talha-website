@@ -91,6 +91,15 @@
     .hero-section__visual { min-height:650px; }
   }
 
+  @media (max-width: 639px) {
+    .hero-section__inner { min-height: auto; padding-top: 8rem; padding-bottom: 5rem; }
+    .hero-section__title { max-width: 10ch; font-size: clamp(2.5rem, 12vw, 4rem); line-height: 1.02; }
+    .hero-section__description { font-size: .98rem; line-height: 1.65; }
+    .hero-section__visual { min-height: 360px; }
+    .hero-section__orbital { width: min(360px, 88vw); height: min(360px, 88vw); }
+    .hero-section__ticker { bottom: 1rem; font-size: 8px; }
+  }
+
   @media (prefers-reduced-motion:reduce) {
     .page-transition-content,.mega-menu-panel--open,.mega-menu-panel--closed{animation:none}
     .reveal-up{transition:none}

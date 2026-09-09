@@ -86,7 +86,7 @@ export default function EmailVerificationModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(4,8,12,0.72)] p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-[var(--fm-radius-xl)] border border-[var(--fm-border)] bg-[var(--fm-surface-raised)] p-6 shadow-2xl shadow-black/25">
+      <div className="w-full max-w-md rounded-[var(--fm-radius-xl)] border border-[var(--fm-border)] bg-[var(--fm-surface-raised)] p-6 shadow-2xl shadow-black/25 sm:p-8">
         <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--fm-lime)]/30 bg-[var(--fm-lime-soft)] text-[var(--fm-lime)]">
           <MailCheck className="h-5 w-5" />
         </div>
@@ -97,24 +97,15 @@ export default function EmailVerificationModal({
           We sent a confirmation link to <span className="font-semibold text-[var(--fm-text-primary)]">{email}</span>. Please check your inbox and click it to continue.
         </p>
 
-        <div className="mt-5 rounded-[var(--fm-radius-md)] border border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] px-4 py-3 text-sm text-[var(--fm-text-primary)]">
+        <div className="mt-6 flex items-center justify-between gap-4 border-t border-[var(--fm-border)] pt-4 text-sm">
           {resendSeconds > 0 ? (
-            <span>Resend email in {resendSeconds}s</span>
+            <span className="font-mono text-xs text-[var(--fm-text-tertiary)]">Resend available in {resendSeconds}s</span>
           ) : (
-            <span>Ready to resend the verification email.</span>
+            <button type="button" onClick={handleResend} disabled={resending} className="inline-flex items-center gap-2 font-semibold text-[var(--fm-lime)] transition hover:text-[var(--fm-lime-bright)] disabled:opacity-60">
+              {resending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+              {resending ? "Sending..." : "Resend email"}
+            </button>
           )}
-        </div>
-
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={resendSeconds > 0 || resending}
-            className="flex flex-1 items-center justify-center gap-2 rounded-[var(--fm-radius-pill)] border border-[var(--fm-border)] bg-[var(--fm-graphite-deep)] px-4 py-3 text-sm font-semibold text-[var(--fm-text-primary)] transition hover:border-[var(--fm-lime)] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {resending ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-            {resending ? "Sending..." : resendSeconds > 0 ? `Resend in ${resendSeconds}s` : "Resend email"}
-          </button>
 
           <button
             type="button"

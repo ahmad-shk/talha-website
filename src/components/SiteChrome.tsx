@@ -13,6 +13,8 @@ const MARKETING_PREFIXES = [
   "/blog",
   "/about",
   "/get-started",
+  "/usa-llc",
+  "/uk-ltd",
   "/state-explorer",
   "/testimonials",
   "/contact",
