@@ -54,30 +54,30 @@
 
 :root {
   /* Foremint design system — single source of truth */
-  --fm-graphite-deep: #010101;
-  --fm-graphite: #010101;
-  --fm-surface: #010101;
-  --fm-surface-raised: #101719;
-  --fm-surface-high: #162126;
-  --fm-border: #24343B;
-  --fm-border-soft: #1A2A31;
-  --fm-border-accent: rgba(0, 119, 182, 0.45);
+  --fm-graphite-deep: #f1f5f9;
+  --fm-graphite: #ffffff;
+  --fm-surface: #ffffff;
+  --fm-surface-raised: #f8fafc;
+  --fm-surface-high: #e2e8f0;
+  --fm-border: #cbd5e1;
+  --fm-border-soft: #e2e8f0;
+  --fm-border-accent: rgba(81, 70, 165, 0.45);
 
-  --fm-text-primary: #F5F8FA;
-  --fm-text-secondary: #AAB8C0;
-  --fm-text-tertiary: #74858E;
-  --fm-text-disabled: #52616A;
+  --fm-text-primary: #0f172a;
+  --fm-text-secondary: #475569;
+  --fm-text-tertiary: #64748b;
+  --fm-text-disabled: #94a3b8;
 
-  --fm-lime: #0077B6;
-  --fm-lime-bright: #18A0E0;
-  --fm-lime-soft: rgba(0, 119, 182, 0.12);
-  --fm-lime-glow: rgba(0, 119, 182, 0.10);
+  --fm-lime: #5146A5;
+  --fm-lime-bright: #6D63C2;
+  --fm-lime-soft: rgba(81, 70, 165, 0.10);
+  --fm-lime-glow: rgba(81, 70, 165, 0.08);
 
   /* Shared atmosphere for navigational hero sections */
-  --fm-hero-glow: rgba(0, 119, 182, 0.18);
-  --fm-hero-glow-soft: rgba(0, 119, 182, 0.08);
+  --fm-hero-glow: rgba(81, 70, 165, 0.18);
+  --fm-hero-glow-soft: rgba(81, 70, 165, 0.08);
   --fm-hero-glow-blur: 90px;
-  --fm-hero-grid-line: rgba(0, 119, 182, 0.055);
+  --fm-hero-grid-line: rgba(81, 70, 165, 0.055);
   --fm-hero-grid-size: 42px;
   --fm-hero-grid-mask: linear-gradient(to bottom, black, transparent 88%);
 

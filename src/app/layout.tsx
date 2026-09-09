@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`bg-[var(--fm-graphite)] ${geist.variable} ${geistMono.variable}`}>
       <body className="antialiased">
         <AuthProvider>
           <ApplicationStateProvider>
