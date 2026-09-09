@@ -2,10 +2,15 @@
 @import "../styles/design-tokens.css";
 
 @layer base {
+  :root {
+    --font-sans: var(--font-inter);
+    --font-display: var(--font-unbounded);
+    --font-mono: var(--font-inter);
+  }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; background: var(--fm-graphite); }
-  body { margin: 0; background: var(--fm-graphite); color: var(--fm-text-primary); font-family: var(--font-sans), sans-serif; }
-  body :is(h1,h2,h3,h4,h5,h6) { font-family: var(--font-sans), sans-serif; letter-spacing: -0.045em; }
+  body { margin: 0; background: var(--fm-graphite); color: var(--fm-text-primary); font-family: var(--font-inter), sans-serif; }
+  body :is(h1,h2,h3,h4,h5,h6), body :is(.heading, .display-text) { font-family: var(--font-unbounded), sans-serif; letter-spacing: -0.045em; }
   a { color: inherit; }
   button,input,textarea,select { font: inherit; }
   button { cursor: pointer; }
