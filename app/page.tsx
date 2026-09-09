@@ -8,7 +8,7 @@ import ProcessSection from "@/components/ProcessSection";
 import StateExplorerSection from "@/components/StateExplorerSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FAQSection from "@/components/FAQSection";
-import CTASection from "@/components/CTASection";
+import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
@@ -24,9 +24,9 @@ export default function HomePage() {
           {/* <StateExplorerSection /> */}
           <TestimonialsSection />
           <FAQSection />
-          <CTASection />
         </main>
       </HomeMotion>
+      <Footer />
     </div>
   );
 }

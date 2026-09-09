@@ -13,6 +13,7 @@ type CountryFeature = Feature<Geometry, CountryProperties>
 const WIDTH = 1000
 const HEIGHT = 560
 const DEFAULT_MAP_COLOR = 'var(--fm-lime)'
+const FOCUS_RADIUS = 72
 
 function buildUsaPath() {
   const countries = feature(
@@ -34,9 +35,14 @@ type UsaGlowMapProps = {
     clientY: number
     active: boolean
   }
+  focus?: {
+    x: number
+    y: number
+    active?: boolean
+  }
 }
 
-export function UsaGlowMap({ color = DEFAULT_MAP_COLOR, pointer }: UsaGlowMapProps) {
+export function UsaGlowMap({ color = DEFAULT_MAP_COLOR, pointer, focus }: UsaGlowMapProps) {
   const svgRef = useRef<SVGSVGElement>(null)
   const cursorRef = useRef({ x: 500, y: 280 })
   const targetRef = useRef({ x: 500, y: 280, active: false })
@@ -93,6 +99,16 @@ export function UsaGlowMap({ color = DEFAULT_MAP_COLOR, pointer }: UsaGlowMapPro
     if (pointer) updatePointerPosition(pointer.clientX, pointer.clientY, pointer.active)
   }, [pointer, updatePointerPosition])
 
+  useEffect(() => {
+    if (!focus) return
+
+    targetRef.current = { x: focus.x, y: focus.y, active: focus.active ?? true }
+    maskRef.current?.setAttribute('cx', String(focus.x))
+    maskRef.current?.setAttribute('cy', String(focus.y))
+    glowPathsRef.current?.setAttribute('opacity', String(focus.active ?? true ? '1' : '0'))
+    startAnimation()
+  }, [focus, startAnimation])
+
   const updatePointer = (event: React.PointerEvent<SVGSVGElement>, active: boolean) => {
     updatePointerPosition(event.clientX, event.clientY, active)
   }
@@ -118,13 +134,13 @@ export function UsaGlowMap({ color = DEFAULT_MAP_COLOR, pointer }: UsaGlowMapPro
             <stop offset="90%" stopColor="white" stopOpacity="0.06" />
             <stop offset="100%" stopColor="black" stopOpacity="0" />
           </radialGradient>
-          <mask id="glow-mask"><rect width={WIDTH} height={HEIGHT} fill="black" /><circle ref={maskRef} cx="500" cy="280" r="116" fill="url(#spotlight)" filter="url(#blur-mask)" /></mask>
+          <mask id="glow-mask"><rect width={WIDTH} height={HEIGHT} fill="black" /><circle ref={maskRef} cx="500" cy="280" r={FOCUS_RADIUS} fill="url(#spotlight)" filter="url(#blur-mask)" /></mask>
           <filter id="blur-mask" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="28" /></filter>
         </defs>
-        <path d={usaPath} fill={color} fillOpacity="0.18" />
+        <path d={usaPath} fill={color} fillOpacity="0.12" />
         <g ref={glowPathsRef} mask="url(#glow-mask)" opacity="0">
-          <path d={usaPath} fill={color} fillOpacity="0.2" stroke="none" />
-          <path d={usaPath} fill="none" stroke={color} strokeOpacity="1" strokeWidth="1.5" />
+          <path d={usaPath} fill={color} fillOpacity="0.38" stroke="none" />
+          <path d={usaPath} fill="none" stroke={color} strokeOpacity="0.9" strokeWidth="1.5" />
         </g>
       </svg>
     </div>

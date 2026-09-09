@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { MapPin } from "lucide-react";
 import { Card } from "@/components/ui/design-system";
 import StartApplicationButton from "@/components/services/StartApplicationButton";
+import { UsaGlowMap } from "@/components/UsaGlowMap";
 import { formationStates, getServiceBySlug } from "@/lib/services";
 
 type StateInfo = (typeof formationStates)[number];
@@ -22,7 +23,7 @@ const styles = {
   packageHeading: "font-display text-2xl font-extrabold tracking-[-.03em] text-[var(--fm-text-primary)]",
   packageDescription: "mt-2 text-sm text-[var(--fm-text-secondary)]",
   packageGrid: "mt-5 grid grid-cols-1 gap-3 md:grid-cols-3",
-  packageCard: "relative cursor-pointer p-5 text-left transition-[border-color,background-color,transform] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:-translate-y-0.5 hover:border-[var(--fm-border-accent)]",
+  packageCard: "relative cursor-pointer border border-[var(--fm-border)] bg-[var(--fm-surface)] p-5 text-left transition-[border-color,background-color,transform] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:-translate-y-0.5 hover:border-[var(--fm-border-accent)]",
   packageCardActive: "border-[var(--fm-lime)] bg-[var(--fm-surface-raised)]",
   packageName: "font-mono text-[10px] font-bold uppercase tracking-[.14em] text-[var(--fm-text-secondary)]",
   packagePrice: "mt-2 font-display text-3xl font-extrabold tracking-[-.03em] text-[var(--fm-text-primary)]",
@@ -35,15 +36,15 @@ const styles = {
   previewColumn: "min-w-0",
   previewCard: "relative flex min-h-[320px] flex-col items-center justify-center gap-8 overflow-hidden p-10 text-center",
   previewGrid: "pointer-events-none absolute inset-0 opacity-70 bg-[linear-gradient(90deg,color-mix(in_srgb,var(--fm-lime)_5.5%,transparent)_1px,transparent_1px),linear-gradient(color-mix(in_srgb,var(--fm-lime)_5.5%,transparent)_1px,transparent_1px)] [background-size:36px_36px]",
-  mapMarker: "relative z-[1] grid h-[140px] w-[140px] place-items-center rounded-full border-4 border-[var(--fm-border)] bg-gradient-to-br from-[var(--fm-lime)] to-[var(--fm-lime-bright)] shadow-[0_20px_50px_color-mix(in_srgb,var(--fm-lime)_18%,transparent)]",
-  mapIcon: "h-14 w-14 text-[var(--fm-graphite-deep)]",
-  selectedState: "relative z-[1]",
-  selectedLabel: "font-mono text-fm-label uppercase tracking-[.14em] text-[var(--fm-text-secondary)]",
+  mapMarker: "absolute z-[2] grid h-[54px] w-[54px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] border-[color-mix(in_srgb,var(--fm-border)_85%,white)] bg-gradient-to-br from-[color-mix(in_srgb,var(--fm-lime)_82%,#3c2e59)] to-[color-mix(in_srgb,var(--fm-lime)_52%,#261d36)] shadow-[0_12px_24px_color-mix(in_srgb,var(--fm-lime)_18%,transparent)]",
+  mapIcon: "h-7 w-7 text-[var(--fm-graphite-deep)]",
+  selectedState: "absolute bottom-7 left-7 z-[1] text-left",
+  selectedLabel: "font-mono text-[11px] font-bold uppercase tracking-[.14em] text-[var(--fm-text-secondary)]",
   selectedCode: "font-bold text-[var(--fm-lime-bright)]",
-  selectedName: "mt-1 font-display text-3xl font-extrabold text-[var(--fm-text-primary)]",
+  selectedName: "mt-1 font-display text-[clamp(2rem,2.8vw,3.2rem)] font-extrabold leading-none text-[var(--fm-text-primary)]",
   popular: "mt-[22px] flex flex-wrap items-center gap-2.5",
   popularLabel: "font-mono text-[11px] uppercase tracking-[.14em] text-[var(--fm-text-secondary)]",
-  stateButton: "rounded-[var(--fm-radius-pill)] border border-[var(--fm-border)] bg-[var(--fm-surface)] px-[18px] py-[9px] text-[13px] font-bold text-[var(--fm-lime-bright)] transition-[background-color,border-color,color] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:border-[var(--fm-border-accent)] hover:bg-[var(--fm-surface-raised)]",
+  stateButton: "rounded-[var(--fm-radius-pill)] border border-[var(--fm-border)] bg-[var(--fm-surface)] px-[18px] py-[9px] text-[13px] font-bold text-[var(--fm-lime-bright)] transition-[background-color,border-color,color] duration-[var(--fm-motion-component)] ease-[var(--fm-motion-ease)] hover:border-[var(--fm-border-accent)] hover:bg-[var(--fm-surface-raised)] hover:text-black",
   stateButtonActive: "border-[var(--fm-lime)] bg-[var(--fm-lime)] text-[var(--fm-graphite-deep)] hover:border-[var(--fm-lime)] hover:bg-[var(--fm-lime)] hover:text-[var(--fm-graphite-deep)]",
   sourceNote: "mt-[18px] font-mono text-[11px] leading-relaxed text-[var(--fm-text-secondary)]",
   detailCard: "p-8",
@@ -70,11 +71,20 @@ const styles = {
   cta: "mt-6 w-full",
 } as const;
 
+const stateMapFocus = {
+  wyoming: { x: 310, y: 180 },
+  "new-mexico": { x: 430, y: 285 },
+  delaware: { x: 635, y: 220 },
+  texas: { x: 510, y: 330 },
+  florida: { x: 725, y: 380 },
+} as const;
+
 export default function StateExplorerSection() {
   const [selected, setSelected] = useState<StateInfo>(formationStates[0]);
   const [packageSlug, setPackageSlug] = useState(PACKAGES[0]?.slug ?? "basic");
   const selectedPackage = PACKAGES.find((item) => item.slug === packageSlug) ?? PACKAGES[0];
   const total = useMemo(() => selected.filingFee + (selectedPackage?.price ?? 0), [selected, selectedPackage]);
+  const selectedFocus = stateMapFocus[selected.slug as keyof typeof stateMapFocus] ?? { x: 500, y: 280 };
 
   return (
     <section id="states" aria-labelledby="states-heading" className={styles.section}>
@@ -111,7 +121,14 @@ export default function StateExplorerSection() {
           <div className={styles.previewColumn}>
             <p className={styles.packageHeading}>2. Choose your state</p>
             <p className={styles.packageDescription}>Compare the state costs before starting your application.</p>
-            <Card variant="elevated" tone="dark" className={`${styles.previewCard} mt-5`}><div className={styles.previewGrid} /><div className={styles.mapMarker}><MapPin className={styles.mapIcon} /></div><div className={styles.selectedState}><p className={styles.selectedLabel}>Selected state · <span className={styles.selectedCode}>{selected.abbreviation}</span></p><p className={styles.selectedName}>{selected.name}</p></div></Card>
+            <Card variant="elevated" tone="dark" className={`${styles.previewCard} mt-5`}>
+              <div className={styles.previewGrid} />
+              <div className="pointer-events-none absolute inset-0 opacity-70">
+                <UsaGlowMap color="var(--fm-lime)" focus={selectedFocus} />
+              </div>
+              <div className={styles.mapMarker} style={{ left: `${(selectedFocus.x / 1000) * 100}%`, top: `${(selectedFocus.y / 560) * 100}%` }}><MapPin className={styles.mapIcon} /></div>
+              <div className={styles.selectedState}><p className={styles.selectedLabel}>Selected state · <span className={styles.selectedCode}>{selected.abbreviation}</span></p><p className={styles.selectedName}>{selected.name}</p></div>
+            </Card>
             <div className={styles.popular}><span className={styles.popularLabel}>States:</span>{formationStates.map((state) => <button key={state.slug} type="button" onClick={() => setSelected(state)} className={`${styles.stateButton} ${selected.slug === state.slug ? styles.stateButtonActive : ""}`}>{state.name}</button>)}</div>
             <p className={styles.sourceNote}>Fees compiled from state Secretary of State schedules, June 2026.<br />State fees are paid to the state, not to Audvertax.</p>
           </div>
